@@ -3,24 +3,25 @@ body {
   background-color: #2f3238;
   margin: 0;
 }
-div {
-  position: fixed;
-  height: auto;
-  width: 592px;
-  top: 50%;
-  left: 50%;
-  margin-top: -57px;
-  margin-left: -291px;
+.icon {
+  border-radius: 320px;
+  border: 20px solid black;
+  width: 300px;
+  height: 300px;
 }
-p {
-  margin: 0;
-  font-size: 99px;
-  font-family: "Futurist-Stencil CY";
-  text-shadow: 0px 0px 0px #3D72DB;
-  color: #72DB3D;
-  cursor: pointer;
-  transition: text-shadow 0.5s ease-out 0s , opacity 0.3s ease-in 0s;
+.profile {
+  fill: black;
+  transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
 }
-.cont p:hover {
-  text-shadow: 0px 0px 20px #8edb3d;
+.links {
+  stroke: black;
+  transition: stroke 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
+}
+.profile:hover {
+  fill: lime;
+  border-color: lime;
+}
+.links:hover {
+  stroke: cyan;
+  border-color: cyan;
 }
