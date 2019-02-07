@@ -17,6 +17,19 @@ body {
   stroke: black;
   transition: stroke 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
 }
+.download {
+  stroke: black;
+  transition: stroke 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
+}
+.home {
+  fill: black;
+  stroke: black;
+  transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s, stroke 0.5s ease-out 0s;
+}
+.wip {
+  stroke: black;
+  transition: stroke 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
+}
 .profile:hover {
   fill: lime;
   border-color: lime;
@@ -24,4 +37,17 @@ body {
 .links:hover {
   stroke: cyan;
   border-color: cyan;
+}
+.download:hover {
+  stroke: orange;
+  border-color: orange;
+}
+.home:hover {
+  fill: white;
+  stroke: white;
+  border-color: white;
+}
+.wip:hover {
+  stroke: yellow;
+  border-color: yellow;
 }

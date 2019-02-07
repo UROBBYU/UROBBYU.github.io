@@ -7,12 +7,11 @@
     <script src="js/main.js"></script>
   </head>
   <body>
-    <svg class="icon profile">
-      <use xlink:href="#profile"></use>
-    </svg>
-    <svg class="icon links">
-      <use xlink:href="#links"></use>
-    </svg>
+    <svg class="icon profile"><use xlink:href="#profile"></use></svg>
+    <svg class="icon links"><use xlink:href="#links"></use></svg>
+    <svg class="icon download"><use xlink:href="#download"></use></svg>
+    <svg class="icon home"><use xlink:href="#home"></use></svg>
+    <svg class="icon wip"><use xlink:href="#wip"></use></svg>
     <div style="display:none;">
       <svg>
         <symbol id="profile" viewBox="0 0 6 6">
@@ -21,7 +20,23 @@
         </symbol>
         <symbol id="links" viewBox="0 0 13 11">
           <rect x="1" y="4" rx="1" ry="1" width="11" height="3" fill="transparent" stroke-width="0.72"/>
-          <rect x="5" y="4" width="3" height="3" fill="#2f3238" stroke-width="0.78" stroke="#2f3238"/>
+          <rect x="5.5" y="4" width="2" height="3" fill="#2f3238" stroke-width="0.78" stroke="#2f3238"/>
+          <line x1="5.11" x2="7.89" y1="4" y2="7" stroke-width="0.72" stroke-linecap="round"/>
+          <line x1="5.61" x2="7.29" y1="6.5" y2="4.5" stroke-width="2.16" stroke="#2f3238"/>
+          <line x1="5.11" x2="7.89" y1="7" y2="4" stroke-width="0.72" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="download" viewBox="0 0 6 4">
+          <path d="M 1 3.5 Q 3 4.5 5 3.5" fill="transparent" stroke-linecap="round" stroke-width="0.3"/>
+          <line x1="1.2" x2="3" y1="2.7" y2="3.5" stroke-width="0.3" stroke-linecap="round"/>
+          <line x1="3" x2="4.8" y1="3.5" y2="2.7" stroke-width="0.3" stroke-linecap="round"/>
+          <line x1="3" x2="3" y1="0" y2="3.4" stroke-width="0.3" stroke-linecap="round"/>
+        </symbol>
+        <symbol id="home" viewBox="0 0 2 2">
+          <polygon points="1 0.2 1.7 0.8 1.5 0.8 1.5 1.6 0.5 1.6 0.5 0.8 0.3 0.8" stroke="transparent"/>
+          <line x1="1.35" x2="1.35" y1="0.35" y2="0.8" stroke-width="0.15"/>
+        </symbol>
+        <symbol id="wip" viewBox="0 0 2 2">
+          <path d="M 0.275 0.425 L 0.375 0.525 L 0.5 0.5 L 0.525 0.375 L 0.425 0.275 Q 0.75 0.25 0.7 0.6 L 1.4 1.3 Q 1.45 1.35 1.4 1.4 Q 1.35 1.45 1.3 1.4 L 0.6 0.7 Q 0.25 0.75 0.275 0.425" fill="transparent" stroke-width="0.05" stroke-linecap="round" stroke-linejoin="round"/>
         </symbol>
       </svg>
     </div>
