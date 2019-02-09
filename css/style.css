@@ -5,30 +5,12 @@ body {
 }
 .icon {
   border-radius: 320px;
-  border: 20px solid black;
-  width: 300px;
-  height: 300px;
-}
-.profile {
-  fill: black;
-  transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
-}
-.links {
-  stroke: black;
-  transition: stroke 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
-}
-.download {
-  stroke: black;
-  transition: stroke 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
-}
-.home {
+  border: 8px solid black;
+  width: 100px;
+  height: 100px;
   fill: black;
   stroke: black;
   transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s, stroke 0.5s ease-out 0s;
-}
-.wip {
-  stroke: black;
-  transition: stroke 0.5s ease-out 0s, border-color 0.5s ease-out 0s;
 }
 .profile:hover {
   fill: lime;
@@ -48,6 +30,12 @@ body {
   border-color: white;
 }
 .wip:hover {
+  stroke: brown;
+  fill: brown;
+  border-color: brown;
+}
+.idea:hover {
   stroke: yellow;
+  fill: yellow;
   border-color: yellow;
 }
