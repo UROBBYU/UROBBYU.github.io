@@ -3,11 +3,74 @@ body {
   background-color: #2f3238;
   margin: 0;
 }
+.button-container {
+  position: absolute;
+  width: 60vmin;
+  height: 60vmin;
+  left: 50%;
+  top: 50%;
+  margin-left: -30vmin;
+  margin-top: -30vmin;
+}
+ul {
+  width: 100%;
+  height: 100%;
+  padding-left: 0;
+  position: absolute;
+  transform-origin: 50% 50%;
+  list-style: none;
+  margin: 0 0 0 0;
+}
+li {
+  position: absolute;
+  width: 15vmin;
+  height: 15vmin;
+  left: 7.5vmin;
+  top: 7.5vmin;
+  transform-origin: 150% 150%;
+}
+li:first-child {
+  transform: rotate(45deg);
+}
+li:nth-child(2) {
+  transform: rotate(117deg);
+}
+li:nth-child(3) {
+  transform: rotate(189deg);
+}
+li:nth-child(4) {
+  transform: rotate(261deg);
+}
+li:nth-child(5) {
+  transform: rotate(333deg);
+}
+li:first-child svg {
+  transform: rotate(-45deg);
+}
+li:nth-child(2) svg {
+  transform: rotate(-117deg);
+}
+li:nth-child(3) svg {
+  transform: rotate(-189deg);
+}
+li:nth-child(4) svg {
+  transform: rotate(-261deg);
+}
+li:nth-child(5) svg {
+  transform: rotate(-333deg);
+}
+.center-button {
+  position: absolute;
+  left: calc(50% - 7.5vmin);
+  top: calc(50% - 7.5vmin);
+}
 .icon {
-  border-radius: 320px;
-  border: 8px solid black;
-  width: 100px;
-  height: 100px;
+  border-radius: 48vmin;
+  border: 1.2vmin solid black;
+  margin-left: -1.2vmin;
+  margin-top: -1.2vmin;
+  width: 15vmin;
+  height: 15vmin;
   fill: black;
   stroke: black;
   transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s, stroke 0.5s ease-out 0s;
@@ -18,6 +81,7 @@ body {
 }
 .links:hover {
   stroke: cyan;
+  fill: cyan;
   border-color: cyan;
 }
 .download:hover {

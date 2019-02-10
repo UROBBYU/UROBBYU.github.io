@@ -7,12 +7,28 @@
     <script src="js/main.js"></script>
   </head>
   <body>
-    <svg class="icon profile"><use xlink:href="#profile"></use></svg>
-    <svg class="icon links"><use xlink:href="#links"></use></svg>
-    <svg class="icon download"><use xlink:href="#download"></use></svg>
-    <svg class="icon home"><use xlink:href="#home"></use></svg>
-    <svg class="icon wip"><use xlink:href="#wip"></use></svg>
-    <svg class="icon idea"><use xlink:href="#idea"></use></svg>
+    <div class="button-container">
+      <ul>
+        <li>
+          <svg class="icon links"><use xlink:href="#links"></use></svg>
+        </li>
+        <li>
+          <svg class="icon idea"><use xlink:href="#idea"></use></svg>
+        </li>
+        <li>
+          <svg class="icon download"><use xlink:href="#download"></use></svg>
+        </li>
+        <li>
+          <svg class="icon home"><use xlink:href="#home"></use></svg>
+        </li>
+        <li>
+          <svg class="icon wip"><use xlink:href="#wip"></use></svg>
+        </li>
+      </ul>
+      <div class="center-button">
+        <svg class="icon profile"><use xlink:href="#profile"></use></svg>
+      </div>
+    </div>
     <div style="display:none;">
       <svg>
         <symbol id="profile" viewBox="0 0 6 6">
@@ -20,11 +36,13 @@
           <circle cx="3" cy="2.25" r="1.75" stroke="transparent"/>
         </symbol>
         <symbol id="links" viewBox="0 0 13 11">
-          <rect x="1" y="4" rx="1" ry="1" width="11" height="3" fill="transparent" stroke-width="0.72"/>
-          <rect x="5.5" y="4" width="2" height="3" fill="#2f3238" stroke-width="0.78" stroke="#2f3238"/>
-          <line x1="5.11" x2="7.89" y1="4" y2="7" stroke-width="0.72" stroke-linecap="round"/>
-          <line x1="5.61" x2="7.29" y1="6.5" y2="4.5" stroke-width="2.16" stroke="#2f3238"/>
-          <line x1="5.11" x2="7.89" y1="7" y2="4" stroke-width="0.72" stroke-linecap="round"/>
+          <rect x="1" y="4" rx="1" ry="1" width="11" height="3" fill="transparent" stroke-width="1"/>
+          <rect x="5" y="0" width="3" height="11" fill="#2f3238" stroke-width="0"/>
+          <line x1="5" x2="8" y1="4" y2="7" stroke-width="1" stroke-linecap="round"/>
+          <line x1="6" x2="7" y1="6" y2="5" stroke-width="3" stroke="#2f3238"/>
+          <line x1="5" x2="8" y1="7" y2="4" stroke-width="1" stroke-linecap="round"/>
+          <polygon points="7 6 7 7.2 8.2 6" stroke-width="0"/>
+          <polygon points="6 5 6 3.8 4.8 5" stroke-width="0"/>
         </symbol>
         <symbol id="download" viewBox="0 0 6 4">
           <path d="M 1 3.5 Q 3 4.5 5 3.5" fill="transparent" stroke-linecap="round" stroke-width="0.3"/>
