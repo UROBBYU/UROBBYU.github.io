@@ -65,7 +65,8 @@ li:nth-child(5) svg {
   top: calc(50% - 7.5vmin);
 }
 .icon {
-  border-radius: 48vmin;
+  cursor: pointer;
+  border-radius: 50%;
   border: 1.2vmin solid black;
   margin-left: -1.2vmin;
   margin-top: -1.2vmin;
@@ -73,7 +74,10 @@ li:nth-child(5) svg {
   height: 15vmin;
   fill: black;
   stroke: black;
-  transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s, stroke 0.5s ease-out 0s;
+  transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s, border-radius 0.5s ease-out 0s, stroke 0.5s ease-out 0s;
+}
+.icon:hover {
+  border-radius: 40%;
 }
 .profile:hover {
   fill: lime;
@@ -94,12 +98,17 @@ li:nth-child(5) svg {
   border-color: white;
 }
 .wip:hover {
-  stroke: brown;
-  fill: brown;
-  border-color: brown;
+  stroke: rgb(199,83,0);
+  fill: rgb(199,83,0);
+  border-color: rgb(199,83,0);
 }
 .idea:hover {
   stroke: yellow;
   fill: yellow;
   border-color: yellow;
+}
+.goal:hover {
+  fill: magenta;
+  stroke: magenta;
+  border-color: magenta;
 }
