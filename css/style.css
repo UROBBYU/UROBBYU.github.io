@@ -74,7 +74,7 @@ li:nth-child(5) svg {
   height: 15vmin;
   fill: #F4F4F4;
   stroke: #F4F4F4;
-  transition: fill 0.5s ease-out 0s, border-color 0.5s ease-out 0s, border-radius 0.5s ease-out 0s, stroke 0.5s ease-out 0s;
+  transition: fill 0.25s ease-out 0s, border-color 0.25s ease-out 0s, border-radius 0.25s ease-out 0s, stroke 0.25s ease-out 0s;
 }
 .icon:hover {
   border-radius: 40%;
