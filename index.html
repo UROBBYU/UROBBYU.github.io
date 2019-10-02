@@ -7,27 +7,26 @@
     <script src="js/main.js"></script>
   </head>
   <body>
-    <div class="button-container">
-      <ul>
-        <li title="My ideas">
-          <svg class="icon idea"><use xlink:href="img/sprite.svg#idea"></use></svg>
-        </li>
-        <li title="My life goals">
-          <svg class="icon goal"><use xlink:href="img/sprite.svg#goal"></use></svg>
-        </li>
-        <li title="Links">
-          <svg class="icon links"><use xlink:href="img/sprite.svg#links"></use></svg>
-        </li>
-        <li title="Repository">
-          <svg class="icon download"><use xlink:href="img/sprite.svg#download"></use></svg>
-        </li>
-        <li title="Current projects">
-          <svg class="icon wip"><use xlink:href="img/sprite.svg#wip"></use></svg>
-        </li>
-      </ul>
-      <div class="center-button" title="My profile">
-        <svg class="icon profile"><use xlink:href="img/sprite.svg#profile"></use></svg>
-      </div>
+    <div class="center-button goal" style="transform: rotate(0deg);" title="My Life Goals">
+      <svg class="icon goal move" style="transform: rotate(0deg);"><use xlink:href="img/sprite.svg#goal"></use></svg>
+    </div>
+    <div class="center-button links" style="transform: rotate(60deg);" title="Links">
+      <svg class="icon links move" style="transform: rotate(-60deg);"><use xlink:href="img/sprite.svg#links"></use></svg>
+    </div>
+    <div class="center-button download" style="transform: rotate(120deg);" title="Downloads">
+      <svg class="icon download move" style="transform: rotate(-120deg);"><use xlink:href="img/sprite.svg#download"></use></svg>
+    </div>
+    <div class="center-button wip" style="transform: rotate(180deg);" title="Current Projects">
+      <svg class="icon wip move" style="transform: rotate(-180deg);"><use xlink:href="img/sprite.svg#wip"></use></svg>
+    </div>
+    <div class="center-button idea" style="transform: rotate(240deg);" title="Ideas">
+      <svg class="icon idea move" style="transform: rotate(-240deg);"><use xlink:href="img/sprite.svg#idea"></use></svg>
+    </div>
+    <div class="center-button profile" style="transform: rotate(300deg);" title="About Me">
+      <svg class="icon profile move" style="transform: rotate(-300deg);"><use xlink:href="img/sprite.svg#profile"></use></svg>
+    </div>
+    <div class="center-button home" style="transform: rotate(0deg);" onclick="move()" title="Menu">
+      <svg class="icon home"><use xlink:href="img/sprite.svg#home"></use></svg>
     </div>
   </body>
 </html>

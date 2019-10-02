@@ -1,114 +1,66 @@
+:root {
+  --background: #303136;
+  --iconcolor: #F4F4F4;
+}
 body {
   height: 100vh;
-  background-color: #171c26;
+  background-color: var(--background);
   margin: 0;
-}
-.button-container {
-  position: absolute;
-  width: 60vmin;
-  height: 60vmin;
-  left: 50%;
-  top: 50%;
-  margin-left: -30vmin;
-  margin-top: -30vmin;
-}
-ul {
-  width: 100%;
-  height: 100%;
-  padding-left: 0;
-  position: absolute;
-  transform-origin: 50% 50%;
-  list-style: none;
-  margin: 0 0 0 0;
-}
-li {
-  position: absolute;
-  width: 15vmin;
-  height: 15vmin;
-  left: 7.5vmin;
-  top: 7.5vmin;
-  transform-origin: 150% 150%;
-}
-li:first-child {
-  transform: rotate(45deg);
-}
-li:nth-child(2) {
-  transform: rotate(117deg);
-}
-li:nth-child(3) {
-  transform: rotate(189deg);
-}
-li:nth-child(4) {
-  transform: rotate(261deg);
-}
-li:nth-child(5) {
-  transform: rotate(333deg);
-}
-li:first-child svg {
-  transform: rotate(-45deg);
-}
-li:nth-child(2) svg {
-  transform: rotate(-117deg);
-}
-li:nth-child(3) svg {
-  transform: rotate(-189deg);
-}
-li:nth-child(4) svg {
-  transform: rotate(-261deg);
-}
-li:nth-child(5) svg {
-  transform: rotate(-333deg);
 }
 .center-button {
   position: absolute;
+  width: 17.5vmin;
+  height: 17.5vmin;
   left: calc(50% - 7.5vmin);
   top: calc(50% - 7.5vmin);
 }
 .icon {
   cursor: pointer;
   border-radius: 50%;
-  border: 1.2vmin solid #F4F4F4;
-  margin-left: -1.2vmin;
-  margin-top: -1.2vmin;
+  border: 1.2vmin solid var(--iconcolor);
   width: 15vmin;
   height: 15vmin;
-  fill: #F4F4F4;
-  stroke: #F4F4F4;
-  transition: fill 0.25s ease-out 0s, border-color 0.25s ease-out 0s, border-radius 0.25s ease-out 0s, stroke 0.25s ease-out 0s;
+  background-color: var(--background);
+  fill: var(--iconcolor);
+  stroke: var(--iconcolor);
+  transition: fill 0.25s ease-out 0s, border-color 0.25s ease-out 0s, border-radius 0.25s ease-out 0s, stroke 0.25s ease-out 0s, margin-left 0.25s ease-out 0s;
 }
 .icon:hover {
   border-radius: 40%;
 }
-.profile:hover {
+.icon.profile:hover {
   fill: lime;
   border-color: lime;
 }
-.links:hover {
+.icon.links:hover {
   stroke: cyan;
   fill: cyan;
   border-color: cyan;
 }
-.download:hover {
+.icon.download:hover {
   stroke: orange;
   border-color: orange;
 }
-.home:hover {
+.icon.home:hover {
   fill: white;
   stroke: white;
   border-color: white;
 }
-.wip:hover {
+.icon.wip:hover {
   stroke: rgb(199,83,0);
   fill: rgb(199,83,0);
   border-color: rgb(199,83,0);
 }
-.idea:hover {
+.icon.idea:hover {
   stroke: yellow;
   fill: yellow;
   border-color: yellow;
 }
-.goal:hover {
+.icon.goal:hover {
   fill: magenta;
   stroke: magenta;
   border-color: magenta;
+}
+.icon.move {
+  margin-left: 22vmin;
 }
