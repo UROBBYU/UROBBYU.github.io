@@ -13,6 +13,7 @@ body {
   height: 17.5vmin;
   left: calc(50% - 7.5vmin);
   top: calc(50% - 7.5vmin);
+  transition: transform 0.4s ease-out 0s;
 }
 .icon {
   cursor: pointer;
@@ -23,7 +24,7 @@ body {
   background-color: var(--background);
   fill: var(--iconcolor);
   stroke: var(--iconcolor);
-  transition: fill 0.25s ease-out 0s, border-color 0.25s ease-out 0s, border-radius 0.25s ease-out 0s, stroke 0.25s ease-out 0s, margin-left 0.25s ease-out 0s;
+  transition: fill 0.25s ease-out 0s, border-color 0.25s ease-out 0s, border-radius 0.25s ease-out 0s, stroke 0.25s ease-out 0s, margin-left 0.25s ease-out 0s, transform 0.4s ease-out 0s;
 }
 .icon:hover {
   border-radius: 40%;
