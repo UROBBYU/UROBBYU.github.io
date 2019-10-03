@@ -1,4 +1,6 @@
 function move() {
+document.getElementsByClassName("center-button menu")[0].title = ((document.getElementsByClassName("center-button menu")[0].title == "Menu") ? "Home" : "Menu");
+document.getElementById("menu").attributes["xlink:href"].value = (document.getElementById("menu").attributes["xlink:href"].value == "img/sprite.svg#menu") ? "img/sprite.svg#home" : "img/sprite.svg#menu";
 document.getElementsByClassName("icon goal")[0].classList = "icon goal" + ((document.getElementsByClassName("icon goal")[0].classList.length == 3) ? "" : " move");
 document.getElementsByClassName("icon links")[0].classList = "icon links" + ((document.getElementsByClassName("icon links")[0].classList.length == 3) ? "" : " move");
 document.getElementsByClassName("icon download")[0].classList = "icon download" + ((document.getElementsByClassName("icon download")[0].classList.length == 3) ? "" : " move");

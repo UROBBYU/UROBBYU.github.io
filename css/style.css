@@ -42,7 +42,7 @@ body {
   stroke: orange;
   border-color: orange;
 }
-.icon.home:hover {
+.icon.menu:hover {
   fill: white;
   stroke: white;
   border-color: white;
