@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="css/style.css">
-  <style></style>
-  <script src="js/main.js"></script>
-</head>
-
-<body>
-  <div id="page">
-    <div onclick="f()">
-      <p id="content-text">Wake</p>
+  <head>
+    <meta charset="utf-8">
+    <title>Test Page</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js"></script>
+  </head>
+  <body>
+    <div class="center-button profile" style="transform: rotate(300deg); z-index: 0;" title="About Me">
+      <svg class="icon profile" onclick="move2(300)" style="transform: rotate(-300deg);"><use xlink:href="img/sprite.svg#profile"></use></svg>
     </div>
-  </div>
-</body>
-
+    <div class="center-button idea" style="transform: rotate(240deg); z-index: 0;" title="Ideas">
+      <svg class="icon idea" onclick="move2(240)" style="transform: rotate(-240deg);"><use xlink:href="img/sprite.svg#idea"></use></svg>
+    </div>
+    <div class="center-button wip" style="transform: rotate(180deg); z-index: 0;" title="Current Projects">
+      <svg class="icon wip" onclick="move2(180)" style="transform: rotate(-180deg);"><use xlink:href="img/sprite.svg#wip"></use></svg>
+    </div>
+    <div class="center-button download" style="transform: rotate(120deg); z-index: 0;" title="Downloads">
+      <svg class="icon download" onclick="move2(120)" style="transform: rotate(-120deg);"><use xlink:href="img/sprite.svg#download"></use></svg>
+    </div>
+    <div class="center-button links" style="transform: rotate(60deg); z-index: 0;" title="Links">
+      <svg class="icon links" onclick="move2(60)" style="transform: rotate(-60deg);"><use xlink:href="img/sprite.svg#links"></use></svg>
+    </div>
+    <div class="center-button goal" style="transform: rotate(0deg); z-index: 0;" title="My Life Goals">
+      <svg class="icon goal" onclick="move2(0)" style="transform: rotate(0deg);"><use xlink:href="img/sprite.svg#goal"></use></svg>
+    </div>
+    <div class="center-button menu" style="z-index: 6;" title="Menu">
+      <svg class="icon menu" onclick="move()"><use id="menu" xlink:href="img/sprite.svg#menu"></use></svg>
+    </div>
+  </body>
 </html>

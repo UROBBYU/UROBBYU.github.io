@@ -1,0 +1,6 @@
+<?xml-stylesheet type="text/css" href="../css/rad.css" ?>
+<svg class="links" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 11">
+  <path stroke-linejoin="round" fill="none" d="M5.5 4.5 5 4 2 4A1 1 0 0 0 1 5L1 6A1 1 0 0 0 2 7L5 7 8 4 11 4A1 1 0 0 1 12 5L12 6A1 1 0 0 1 11 7L8 7 7.5 6.5"/>
+  <polygon points="7 6 7 7.2 8.2 6" stroke="none"/>
+  <polygon points="6 5 6 3.8 4.8 5" stroke="none"/>
+</svg>

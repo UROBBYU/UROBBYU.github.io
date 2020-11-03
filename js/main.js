@@ -1,37 +1,19 @@
-var b;
-var state = 0;
-window.addEventListener('load', function() {
-	b = document.getElementById("content-text");
-});
-var f = function() {
-	if (state === 0) {
-		state = 1;
-		b.textContent = "Constructing...";
-		b.style.color = "orange";
-		var req = new XMLHttpRequest();
-		req.onreadystatechange = function() {
-			if (req.readyState == req.DONE) {
-				if (req.response === "true") {
-					b.textContent = "Success";
-					b.style.color = "lime";
-				} else {
-					b.textContent = req.response;
-					b.style.color = "red";
-				}
-			} else if (req.readyState == req.OPENED) {
-				b.textContent = "Sending...";
-				b.style.color = "yellow";
-			}
-		}
-		req.open("POST", "https://europe-west3-uwakeonwan1.cloudfunctions.net/wakeon", true);
-		req.send(JSON.stringify({
-			ip: "194.29.60.68",
-			port: "8030",
-			mac: "9c:5c:8e:78:67:e6"
-		}));
-	} else {
-		b.textContent = "Wake";
-		b.style.color = "";
-		state = 0;
-	}
-};
+function move() {
+document.getElementsByClassName("center-button menu")[0].title = ((document.getElementsByClassName("center-button menu")[0].title == "Menu") ? "Home" : "Menu");
+document.getElementById("menu").attributes["xlink:href"].value = (document.getElementById("menu").attributes["xlink:href"].value == "img/sprite.svg#menu") ? "img/sprite.svg#home" : "img/sprite.svg#menu";
+document.getElementsByClassName("icon goal")[0].classList = "icon goal" + ((document.getElementsByClassName("icon goal")[0].classList.length == 3) ? "" : " move");
+document.getElementsByClassName("icon links")[0].classList = "icon links" + ((document.getElementsByClassName("icon links")[0].classList.length == 3) ? "" : " move");
+document.getElementsByClassName("icon download")[0].classList = "icon download" + ((document.getElementsByClassName("icon download")[0].classList.length == 3) ? "" : " move");
+document.getElementsByClassName("icon wip")[0].classList = "icon wip" + ((document.getElementsByClassName("icon wip")[0].classList.length == 3) ? "" : " move");
+document.getElementsByClassName("icon idea")[0].classList = "icon idea" + ((document.getElementsByClassName("icon idea")[0].classList.length == 3) ? "" : " move");
+document.getElementsByClassName("icon profile")[0].classList = "icon profile" + ((document.getElementsByClassName("icon profile")[0].classList.length == 3) ? "" : " move");
+}
+
+function move2(cls) {
+var mv = (document.getElementsByClassName("center-button profile")[0].style.transform != "rotate(300deg)" || document.getElementsByClassName("center-button goal")[0].style.transform != "rotate(0deg)");
+for (var i = 0; i < 6; i++) {
+  document.getElementsByClassName("center-button")[i].style["z-index"] = ((cls / 60 - 6 + i) < 0) ? (cls / 60 + i) : (cls / 60 - 6 + i);
+  document.getElementsByClassName("center-button")[5 - i].style.transform = "rotate(" + ((mv) ? (60*i) : ((cls > (60*i)) ? cls - 360 : cls)) + "deg)";
+  document.getElementsByClassName("icon")[5 - i].style.transform = "rotate(" + ((mv) ? (60*i) : ((cls > (60*i)) ? cls - 360 : cls))*(-1) + "deg)";
+}
+}

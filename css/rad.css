@@ -1,0 +1,54 @@
+:root {
+  --background: #303136;
+  --icon: #F4F4F4;
+}
+body {
+  background-color: var(--background);
+}
+.workspace {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 1000px;
+  height: 1000px;
+}
+svg {
+  fill: var(--icon);
+  stroke: var(--icon);
+}
+object {
+  position: relative;
+  border: 8px solid var(--icon);
+  border-radius: 50%;
+  background-color: var(--background);
+}
+object, svg {
+
+}
+object, svg:hover {
+  transition: fill 0.25s ease-out 0s, border-color 0.25s ease-out 0s, border-radius 0.25s ease-out 0s, stroke 0.25s ease-out 0s;
+}
+object:hover {
+  border-radius: 40%;
+}
+.profile:hover {
+  --icon: lime;
+}
+.links:hover {
+  --icon: cyan;
+}
+.download:hover {
+  --icon: orange;
+}
+.menu:hover {
+  --icon: white;
+}
+.wip:hover {
+  --icon: #c75300;
+}
+.idea:hover {
+  --icon: yellow;
+}
+.goal:hover {
+  --icon: magenta;
+}
