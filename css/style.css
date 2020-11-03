@@ -1,67 +1,26 @@
-:root {
-  --background: #303136;
-  --iconcolor: #F4F4F4;
-}
+html,
 body {
-  height: 100vh;
-  background-color: var(--background);
+  width: 100%;
+  height: 100%;
   margin: 0;
+  padding: 0;
 }
-.center-button {
-  position: absolute;
-  width: 17.5vmin;
-  height: 17.5vmin;
-  left: calc(50% - 7.5vmin);
-  top: calc(50% - 7.5vmin);
-  transition: transform 0.4s ease-out 0s;
+
+#page {
+  background-color: #303136;
+  height: 100%;
+  position: relative;
+  width: 100%;
 }
-.icon {
-  cursor: pointer;
-  border-radius: 50%;
-  border: 1.2vmin solid var(--iconcolor);
-  width: 15vmin;
-  height: 15vmin;
-  background-color: var(--background);
-  fill: var(--iconcolor);
-  stroke: var(--iconcolor);
-  transition: fill 0.25s ease-out 0s, border-color 0.25s ease-out 0s, border-radius 0.25s ease-out 0s, stroke 0.25s ease-out 0s, margin-left 0.25s ease-out 0s, transform 0.4s ease-out 0s;
+
+#content-text {
+  font-weight: bold;
+  font-size: 40px;
+  width: 100%;
+  height: 100%;
+  line-height: 360px;
+  margin: 0;
+  text-align: center;
+  color: #F4F4F4;
 }
-.icon:hover {
-  border-radius: 40%;
-}
-.icon.profile:hover {
-  fill: lime;
-  border-color: lime;
-}
-.icon.links:hover {
-  stroke: cyan;
-  fill: cyan;
-  border-color: cyan;
-}
-.icon.download:hover {
-  stroke: orange;
-  border-color: orange;
-}
-.icon.menu:hover {
-  fill: white;
-  stroke: white;
-  border-color: white;
-}
-.icon.wip:hover {
-  stroke: rgb(199,83,0);
-  fill: rgb(199,83,0);
-  border-color: rgb(199,83,0);
-}
-.icon.idea:hover {
-  stroke: yellow;
-  fill: yellow;
-  border-color: yellow;
-}
-.icon.goal:hover {
-  fill: magenta;
-  stroke: magenta;
-  border-color: magenta;
-}
-.icon.move {
-  margin-left: 22vmin;
-}
+
