@@ -1,5 +1,3 @@
-import { SVG } from '@svgdotjs/svg.js'
-
 function move() {
 document.getElementsByClassName("center-button menu")[0].title = ((document.getElementsByClassName("center-button menu")[0].title == "Menu") ? "Home" : "Menu");
 document.getElementById("menu").attributes["xlink:href"].value = (document.getElementById("menu").attributes["xlink:href"].value == "img/sprite.svg#menu") ? "img/sprite.svg#home" : "img/sprite.svg#menu";
