@@ -1,8 +1,8 @@
 {
-  'key1': {
-    'innerKey1': 15,
-    'innerKey2': 'Some text'
+  "key1": {
+    "innerKey1": 15,
+    "innerKey2": "Some text"
   },
-  'key2': 'More text',
-  'key3': 1922
+  "key2": "More text",
+  "key3": 1922
 }
