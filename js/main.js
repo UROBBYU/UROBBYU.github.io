@@ -1,3 +1,5 @@
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/js/sw.js')
+
 /*HTMLEmbedElement.prototype.play = function() {
   this.getSVGDocument?.()?.querySelectorAll('animate, animateTransform').forEach(elem => elem.beginElement())
 }
