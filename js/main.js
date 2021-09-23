@@ -1,19 +1,31 @@
-function move() {
-document.getElementsByClassName("center-button menu")[0].title = ((document.getElementsByClassName("center-button menu")[0].title == "Menu") ? "Home" : "Menu");
-document.getElementById("menu").attributes["xlink:href"].value = (document.getElementById("menu").attributes["xlink:href"].value == "img/sprite.svg#menu") ? "img/sprite.svg#home" : "img/sprite.svg#menu";
-document.getElementsByClassName("icon goal")[0].classList = "icon goal" + ((document.getElementsByClassName("icon goal")[0].classList.length == 3) ? "" : " move");
-document.getElementsByClassName("icon links")[0].classList = "icon links" + ((document.getElementsByClassName("icon links")[0].classList.length == 3) ? "" : " move");
-document.getElementsByClassName("icon download")[0].classList = "icon download" + ((document.getElementsByClassName("icon download")[0].classList.length == 3) ? "" : " move");
-document.getElementsByClassName("icon wip")[0].classList = "icon wip" + ((document.getElementsByClassName("icon wip")[0].classList.length == 3) ? "" : " move");
-document.getElementsByClassName("icon idea")[0].classList = "icon idea" + ((document.getElementsByClassName("icon idea")[0].classList.length == 3) ? "" : " move");
-document.getElementsByClassName("icon profile")[0].classList = "icon profile" + ((document.getElementsByClassName("icon profile")[0].classList.length == 3) ? "" : " move");
+/*HTMLEmbedElement.prototype.play = function() {
+  this.getSVGDocument?.()?.querySelectorAll('animate, animateTransform').forEach(elem => elem.beginElement())
 }
 
-function move2(cls) {
-var mv = (document.getElementsByClassName("center-button profile")[0].style.transform != "rotate(300deg)" || document.getElementsByClassName("center-button goal")[0].style.transform != "rotate(0deg)");
-for (var i = 0; i < 6; i++) {
-  document.getElementsByClassName("center-button")[i].style["z-index"] = ((cls / 60 - 6 + i) < 0) ? (cls / 60 + i) : (cls / 60 - 6 + i);
-  document.getElementsByClassName("center-button")[5 - i].style.transform = "rotate(" + ((mv) ? (60*i) : ((cls > (60*i)) ? cls - 360 : cls)) + "deg)";
-  document.getElementsByClassName("icon")[5 - i].style.transform = "rotate(" + ((mv) ? (60*i) : ((cls > (60*i)) ? cls - 360 : cls))*(-1) + "deg)";
-}
-}
+let emb = document.getElementById('anim-sandglass')
+emb.onload = () => emb.getSVGDocument().getElementsByTagName('animate')[0].addEventListener('endEvent', () => emb.play())
+
+let emb2 = document.getElementById('anim-circle-to-hex')
+emb2.onload = () => {
+  let anim = emb2.getSVGDocument().getElementsByTagName('animate')[0]
+  let rev = anim.cloneNode()
+  rev.attributes.values.textContent = rev.attributes.values.textContent.split(';').reverse().join(';')
+  rev.attributes.keySplines.textContent = "0.42,0,1,1"
+  anim.parentNode.appendChild(rev)
+  emb2.play = () => {
+    try {
+      let offset = rev.getSimpleDuration() - rev.getCurrentTime() + rev.getStartTime()
+      anim.beginElementAt(-offset)
+    } catch (err) {
+      anim.beginElement()
+    }
+  }
+  emb2.playReverse = () => {
+    try {
+      let offset = anim.getSimpleDuration() - anim.getCurrentTime() + anim.getStartTime()
+      rev.beginElementAt(-offset)
+    } catch (err) {
+      rev.beginElement()
+    }
+  }
+}*/
