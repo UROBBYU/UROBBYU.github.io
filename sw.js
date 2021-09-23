@@ -18,7 +18,7 @@ const contentToCache = [
 
 self.addEventListener('install', e => {
     e.waitUntil((async () => {
-        const cache = await cache.open(cacheVersion)
+        const cache = await caches.open(cacheVersion)
         await cache.addAll(contentToCache)
     })())
 })
