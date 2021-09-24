@@ -1,4 +1,4 @@
-const cacheVersion = 'v0.1'
+const cacheVersion = 'v0.2'
 const contentToCache = [
     '/',
     '/css/style.css',
@@ -13,7 +13,18 @@ const contentToCache = [
     '/img/wip.svg',
     '/js/main.js',
     '/favicon.ico',
-    '/index.html'
+    '/index.html',
+    '/Minesweeper/',
+    '/Minesweeper/img/apple-touch-icon.png',
+    '/Minesweeper/img/icon-192.png',
+    '/Minesweeper/img/icon-512.png',
+    '/Minesweeper/img/mstile-150.png',
+    '/Minesweeper/img/safari-pinned-tab.svg',
+    '/Minesweeper/img/browserconfig.xml',
+    '/Minesweeper/index.html',
+    '/Minesweeper/main.js',
+    '/Minesweeper/minesweeper.webmanifest',
+    '/Minesweeper/style.css'
 ]
 
 self.addEventListener('install', e => {
@@ -23,12 +34,15 @@ self.addEventListener('install', e => {
     })())
 })
 
+self.addEventListener('activate', e => {
+    e.waitUntil(caches.keys().then(kL => Promise.all(kL.map(k => {
+        if (!contentToCache.includes(k)) return caches.delete(k)
+    }))))
+})
+
 self.addEventListener('fetch', e => {
     e.respondWith((async () => {
         if (ret = await caches.match(e.request)) return ret
-        const res = await fetch(e.request)
-        const cache = await caches.open(cacheVersion)
-        cache.put(e.request, res.clone())
-        return res
+        return await fetch(e.request)
     })())
 })
