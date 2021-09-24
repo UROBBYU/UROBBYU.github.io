@@ -26,17 +26,15 @@ const contentToCache = [
     '/Minesweeper/minesweeper.webmanifest',
     '/Minesweeper/style.css'
 ]
+const cacheToKeep = ['v0.2']
 
 self.addEventListener('install', e => {
-    e.waitUntil((async () => {
-        const cache = await caches.open(cacheVersion)
-        await cache.addAll(contentToCache)
-    })())
+    e.waitUntil(caches.open(cacheVersion).then(cache => cache.addAll(contentToCache)))
 })
 
 self.addEventListener('activate', e => {
     e.waitUntil(caches.keys().then(kL => Promise.all(kL.map(k => {
-        if (!contentToCache.includes(k)) return caches.delete(k)
+        if (!cacheToKeep.includes(k)) return caches.delete(k)
     }))))
 })
 
