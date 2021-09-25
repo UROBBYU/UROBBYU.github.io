@@ -12,6 +12,7 @@ const cacheData = {
         '/img/sprite.svg',
         '/img/wip.svg',
         '/js/main.js',
+        '/browserconfig.xml',
         '/favicon.ico',
         '/index.html'
     ],
@@ -22,7 +23,6 @@ const cacheData = {
         '/Minesweeper/img/icon-512.png',
         '/Minesweeper/img/mstile-150.png',
         '/Minesweeper/img/safari-pinned-tab.svg',
-        '/Minesweeper/browserconfig.xml',
         '/Minesweeper/index.html',
         '/Minesweeper/main.js',
         '/Minesweeper/minesweeper.webmanifest',

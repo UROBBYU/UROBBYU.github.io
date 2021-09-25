@@ -230,26 +230,26 @@ window.plugins = setInterval(() => {
                 await sleep(100)
                 const id = document.querySelector('#tool-selection .bounding-box-rect').dataset.for
                 const options = document.querySelectorAll('[data-region="editor-right-content"] .accordion-body.disable-on-play .accordion-entry input')
-                const boundary = document.querySelector('.selection-bounding-box').getBBox()
+                //const boundary = document.querySelector('.selection-bounding-box').getBBox()
                 const object = objectList.querySelector('#'+id)
                 const rectOffset = object.tagName == 'rect'
-                const [dotNX, dotNY] = rotateVector([
+                /*const [dotNX, dotNY] = rotateVector([
                     options[4+rectOffset].value - (boundary.x + boundary.width / 2),
                     options[5+rectOffset].value - (boundary.y + boundary.height / 2)
                 ], -options[13+rectOffset].value / 180 * Math.PI)
                 const anchorX = dotNX + options[2].value / 2
-                const anchorY = dotNY + options[3].value / 2
+                const anchorY = dotNY + options[3].value / 2*/
                 objBase[id] = {
                     size:   [options[2].value*1, options[3].value*1],
                     origin: [options[4+rectOffset] .value*1, options[5+rectOffset] .value*1],
                     anchor: [options[6+rectOffset] .value*1, options[7+rectOffset] .value*1],
                     scale:  [options[8+rectOffset] .value*1, options[9+rectOffset] .value*1],
                     skew:   [options[10+rectOffset].value*1, options[11+rectOffset].value*1],
-                    rotate: [options[12+rectOffset].value*1, options[13+rectOffset].value*1],
+                    rotate: [options[12+rectOffset].value*1, options[13+rectOffset].value*1]/*,
                     dot:    [
                         Math.round(anchorX / options[8].value * 100) / 100,
                         Math.round(anchorY / options[9].value * 100) / 100
-                    ]
+                    ]*/
                 }
                 if (animation.hasOwnProperty(id)) {
                     const timestamps = Object.keys(animation[id])
@@ -330,7 +330,7 @@ window.plugins = setInterval(() => {
                 const fill = (funcOptions.fillMode == 'Forwards' ? ' fill="freeze"' : '')
                 str = str.replace(/ transform=".*?"/g, ` transform="matrix(${matrix})"`)
                 str = str.replaceAll(/ (style=".*?"|opacity="1"|fill-opacity="1"|fill-rule="nonzero"|stroke-opacity="1"|stroke-linecap="butt"|stroke-linejoin="miter"|stroke-miterlimit="4"|stroke-dashoffset="0"|stroke-dasharray="")/g, '')
-                str = str.replace('" ', `" style="transform-box:fill-box;transform-origin:${objBase[id].dot[0]}px ${objBase[id].dot[1]}px" `)
+                str = str.replace('" ', `" style="transform-origin:${-objBase[id].anchor[0]}px ${-objBase[id].anchor[1]}px" `)
                 str = str.substr(0, str.indexOf('<|'))
                 if (animation.hasOwnProperty(id)) {
                     for (let type in animation[id]) {
@@ -381,6 +381,15 @@ window.plugins = setInterval(() => {
             }
             let str = `<svg id="${funcOptions.filename.replaceAll(' ', '-').replace('.svg', '').toLowerCase()}" xmlns="http://www.w3.org/2000/svg" viewBox="${canvasMetric}" width="${canvasWidth}" height="${canvasHeight}"${funcOptions.fillColor ? ` style="background-color:${funcOptions.fillColor}"` : ''}>`
             str += recSVGAssamble(objectList.querySelectorAll(':scope > :not([style*="display: none"])'))
+            if (funcOptions.beginType == 'On function call') str += `<script>${[
+                "const a=document.querySelectorAll('animate,animateTransform')",
+                "document.beginAnimation=()=>a.forEach(v=>v.beginElement())",
+                "document.beginAnimationAt=o=>a.forEach(v=>v.beginElementAt(o))",
+                "document.endAnimation=()=>a.forEach(v=>v.endElement())",
+                "document.endAnimationAt=o=>a.forEach(v=>v.endElement(o))",
+                "Object.defineProperty(document,'repeatCount',{get(){return a[0].getAttribute('repeatCount')*1},set(v){a.forEach(e=>e.setAttribute('repeatCount',v))}})",
+                "Object.defineProperty(document,'fillMode',{get(){return a[0].getAttribute('fill')},set(v){a.forEach(e=>e.setAttribute('fill',v))}})"
+            ].join(';')}</script>`
             str += '</svg>'
             const downloader = document.createElement('a')
             downloader.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(str)
@@ -544,6 +553,8 @@ window.plugins = setInterval(() => {
         }
     
         const modal = document.querySelector('[data-region="layout"] > .modal')
+        let canvasColorPicker
+        const pluginSector = createElement('<div data-v-bbaba23c="" class="section"></div>')
         const modalObserver = new MutationObserver(e => {
             if (!e[0].oldValue.includes('show') && modal.classList.contains('show')) {
                 const loadedPlugins = {}
@@ -551,14 +562,12 @@ window.plugins = setInterval(() => {
                 const tabContent = modal.querySelector('.tab-content')
                 const tabs = tabContent.querySelector('.tabs')
                 const pluginsTab = createElement('<div data-v-5b3fc24a="" class="tab" style="--accordion-title-clr:lime;filter:grayscale(1)"><span style="margin-right:6px;margin-top:-2px;font-size:16px">🧩</span><span data-v-5b3fc24a="">Plugins</span></div>')
-                let canvasColorPicker
                 const unpreview = createElement('<div style="color:black;font-size:60px;font-weight:bold;text-align:center;width:100%;margin-top:35%">Preview is not available</div>')
                 const exportButton = createElement('<button class="custom-button">Export</button>')
                 const tabArray = tabs.children
                 let lastPage = tabs.querySelector('.active')
                 let exportStaticFlag
                 let currentFunction
-                const pluginSector = createElement('<div data-v-bbaba23c="" class="section"></div>')
                 const pluginSelect = createSelect({
                     id: 'plugin',
                     title: 'Plugin',
@@ -638,6 +647,10 @@ window.plugins = setInterval(() => {
                     }
                 })
                 tabs.appendChild(pluginsTab)
+            } else if (e[0].oldValue.includes('show') && !modal.classList.contains('show')) {
+                canvasColorPicker?.remove()
+                canvasColorPicker = undefined
+                pluginSector.innerHTML = ''
             }
         })
         modalObserver.observe(modal, { attributes: true, attributeFilter: ['class'], attributeOldValue: true })
