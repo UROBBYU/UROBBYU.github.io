@@ -15,6 +15,26 @@ window.plugins = setInterval(() => {
             const animation = {}
             const svgData = {}
             const objBase = {}
+
+            const animTypeMap = {
+                'shape-size': ['width', 'height'],
+                'shape-radius': ['rx', 'ry'],
+                'shape-path': 'd',
+                'transform-origin': 'translate',
+                'transform-translate': 'translate',       //TODO
+                'transform-scale': 'scale',
+                'transform-skew': ['skewX', 'skewY'],
+                'transform-rotate': 'rotate',
+                'compositing-opacity': 'opacity',
+                'fill-paint': 'fill',                     //TODO
+                'fill-opacity': 'fill-opacity',
+                'stroke-paint': 'stroke',                 //TODO
+                'stroke-opacity': 'stroke-opacity',
+                'stroke-width': 'stroke-width',
+                'stroke-dashArray': 'stroke-dasharray',
+                'stroke-dashOffset': 'stroke-dashoffset',
+                'filter-list': ''                         //TODO
+            }
         
             function sleep(time) {
                 return new Promise(res => setTimeout(res, time))
@@ -151,7 +171,7 @@ window.plugins = setInterval(() => {
         
             for (const a of animList) {
                 const id = a.dataset.for
-                const type = a.dataset.propertyname
+                const type = `${a.dataset.propertygroup}-${a.dataset.propertyname}`
                 const keys = a.querySelectorAll('.timeline-key.timeline-key-diamond')
                 if (!animation[id]) animation[id] = {}
                 let anim = animation[id][type] = { keyTimes: [], values: [], base: null , ease: []}
@@ -229,14 +249,14 @@ window.plugins = setInterval(() => {
                 timelineRulerFull.dispatchEvent(new MouseEvent('click', { clientX: timelineRulerAnim.getBoundingClientRect().x }))
                 await sleep(100)
                 const id = document.querySelector('#tool-selection .bounding-box-rect').dataset.for
-                const options = document.querySelectorAll('[data-region="editor-right-content"] .accordion-body.disable-on-play .accordion-entry input')
+                const options = document.querySelectorAll('[data-region="editor-right-content"] .accordion-body.disable-on-play input')
                 const object = objectList.querySelector('#'+id)
                 const rectOffset = object.tagName == 'rect'
                 objBase[id] = {
                     size:   [options[2].value*1, options[3].value*1],
-                    origin: [options[4+rectOffset] .value*1, options[5+rectOffset] .value*1],
-                    anchor: [options[6+rectOffset] .value*1, options[7+rectOffset] .value*1],
-                    scale:  [options[8+rectOffset] .value*1, options[9+rectOffset] .value*1],
+                    origin: [options[4 +rectOffset].value*1, options[5 +rectOffset].value*1],
+                    anchor: [options[6 +rectOffset].value*1, options[7 +rectOffset].value*1],
+                    scale:  [options[8 +rectOffset].value*1, options[9 +rectOffset].value*1],
                     skew:   [options[10+rectOffset].value*1, options[11+rectOffset].value*1],
                     rotate: [options[12+rectOffset].value*1, options[13+rectOffset].value*1]
                 }
@@ -254,12 +274,20 @@ window.plugins = setInterval(() => {
                         await sleep(50)
                         for (const type in v.data) {
                             animation[id][type].values[v.data[type]] = (() => {switch (type) {
-                                case 'scale': return `${options[8+rectOffset].value / objBase[id].scale[0]} ${options[9+rectOffset].value / objBase[id].scale[1]}`
-                                case 'rotate': return options[13+rectOffset].value*1 + 360 * options[12+rectOffset].value - objBase[id].rotate[1] - 360 * objBase[id].rotate[0]
-                                case 'origin': return `${options[4+rectOffset].value - objBase[id].origin[0]} ${options[5+rectOffset].value - objBase[id].origin[1]}`
-                                case 'skew': return `${options[10+rectOffset].value - objBase[id].skew[0]} ${options[11+rectOffset].value - objBase[id].skew[1]}`
-                                case 'opacity': return options[15+rectOffset].value / 100
-                                case 'path': return object.getAttribute('d')
+                                case 'shape-size':          return `${object.getAttribute('width')} ${object.getAttribute('height')}`
+                                case 'shape-radius':        return `${object.getAttribute('rx')} ${object.getAttribute('ry')}`
+                                case 'shape-path':          return object.getAttribute('d')
+                                case 'transform-origin':    return `${options[4+rectOffset].value - objBase[id].origin[0]} ${options[5+rectOffset].value - objBase[id].origin[1]}`
+                                //case 'transform-translate': return `${options[6+rectOffset].value - objBase[id].anchor[0]} ${options[7+rectOffset].value - objBase[id].anchor[1]}`
+                                case 'transform-scale':     return `${options[8+rectOffset].value / objBase[id].scale[0]} ${options[9+rectOffset].value / objBase[id].scale[1]}`
+                                case 'transform-skew':      return `${options[10+rectOffset].value - objBase[id].skew[0]} ${options[11+rectOffset].value - objBase[id].skew[1]}`
+                                case 'transform-rotate':    return options[13+rectOffset].value*1 + 360 * options[12+rectOffset].value - objBase[id].rotate[1] - 360 * objBase[id].rotate[0]
+                                case 'compositing-opacity': return options[15+rectOffset].value / 100
+                                case 'fill-opacity':        return options[17+rectOffset].value / 100
+                                case 'stroke-opacity':      return options[19+rectOffset].value / 100
+                                case 'stroke-width':        return options[20+rectOffset].value*1
+                                case 'stroke-dashArray':    return options[22+rectOffset].value.split(';').join('')
+                                case 'stroke-dashOffset':   return options[23+rectOffset].value*1
                             }})()
                         }
                     }
@@ -325,21 +353,23 @@ window.plugins = setInterval(() => {
                     for (let type in animation[id]) {
                         const anim = animation[id][type]
                         const spline = (anim.keySplines ? ` calcMode="spline" keySplines="${anim.keySplines}"` : '')
-                        if (type == 'origin') type = 'translate'
-                        if (type == 'path') type = 'd'
-                        switch (type) {
-                            case 'd':
-                            case 'opacity':
-                                str += `<animate${begin} attributeName="${type}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
-                                break
-                            case 'skew':
-                                str += `<animateTransform${begin} attributeName="transform" type="skewX" values="${anim.values.split(';').map(v => v.split(' ')[0]).join(';')}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
-                                str += `<animateTransform${begin} attributeName="transform" type="skewY" values="${anim.values.split(';').map(v => v.split(' ')[1]).join(';')}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
-                                break
-                            case 'scale':
-                            case 'rotate':
-                            case 'translate':
-                                str += `<animateTransform${begin} attributeName="transform" type="${type}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
+                        const [propGroup, propName] = type.split('-')
+                        const propAttr = animTypeMap[type]
+                        const splitter = n => anim.values.split(';').map(v => v.split(' ')[n]).join(';')
+                        if (propGroup == 'transform') {
+                            if (propName == 'skew') {
+                                str += `<animateTransform${begin} attributeName="transform" type="skewX" values="${splitter(0)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
+                                str += `<animateTransform${begin} attributeName="transform" type="skewY" values="${splitter(1)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
+                            } else {
+                                str += `<animateTransform${begin} attributeName="transform" type="${propAttr}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
+                            }
+                        } else {
+                            if (type == 'shape-radius' || type == 'shape-size') {
+                                str += `<animate${begin} attributeName="${propAttr[0]}" values="${splitter(0)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                str += `<animate${begin} attributeName="${propAttr[1]}" values="${splitter(1)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                            } else {
+                                str += `<animate${begin} attributeName="${propAttr}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                            }
                         }
                     }
                 }
