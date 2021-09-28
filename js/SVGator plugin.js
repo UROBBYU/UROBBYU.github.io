@@ -230,26 +230,15 @@ window.plugins = setInterval(() => {
                 await sleep(100)
                 const id = document.querySelector('#tool-selection .bounding-box-rect').dataset.for
                 const options = document.querySelectorAll('[data-region="editor-right-content"] .accordion-body.disable-on-play .accordion-entry input')
-                //const boundary = document.querySelector('.selection-bounding-box').getBBox()
                 const object = objectList.querySelector('#'+id)
                 const rectOffset = object.tagName == 'rect'
-                /*const [dotNX, dotNY] = rotateVector([
-                    options[4+rectOffset].value - (boundary.x + boundary.width / 2),
-                    options[5+rectOffset].value - (boundary.y + boundary.height / 2)
-                ], -options[13+rectOffset].value / 180 * Math.PI)
-                const anchorX = dotNX + options[2].value / 2
-                const anchorY = dotNY + options[3].value / 2*/
                 objBase[id] = {
                     size:   [options[2].value*1, options[3].value*1],
                     origin: [options[4+rectOffset] .value*1, options[5+rectOffset] .value*1],
                     anchor: [options[6+rectOffset] .value*1, options[7+rectOffset] .value*1],
                     scale:  [options[8+rectOffset] .value*1, options[9+rectOffset] .value*1],
                     skew:   [options[10+rectOffset].value*1, options[11+rectOffset].value*1],
-                    rotate: [options[12+rectOffset].value*1, options[13+rectOffset].value*1]/*,
-                    dot:    [
-                        Math.round(anchorX / options[8].value * 100) / 100,
-                        Math.round(anchorY / options[9].value * 100) / 100
-                    ]*/
+                    rotate: [options[12+rectOffset].value*1, options[13+rectOffset].value*1]
                 }
                 if (animation.hasOwnProperty(id)) {
                     const timestamps = Object.keys(animation[id])
@@ -380,6 +369,8 @@ window.plugins = setInterval(() => {
                 return str
             }
             let str = `<svg id="${funcOptions.filename.replaceAll(' ', '-').replace('.svg', '').toLowerCase()}" xmlns="http://www.w3.org/2000/svg" viewBox="${canvasMetric}" width="${canvasWidth}" height="${canvasHeight}"${funcOptions.fillColor ? ` style="background-color:${funcOptions.fillColor}"` : ''}>`
+            if ((dynDef = document.querySelector('defs#dynamic-definitions'))?.innerHTML) str += dynDef.outerHTML
+            if ((def = document.querySelector('defs#definitions'))?.innerHTML) str += def.outerHTML
             str += recSVGAssamble(objectList.querySelectorAll(':scope > :not([style*="display: none"])'))
             if (funcOptions.beginType == 'On function call') str += `<script>${[
                 "const a=document.querySelectorAll('animate,animateTransform')",
