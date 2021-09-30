@@ -1,7 +1,18 @@
+/**
+ * @name         SVGator_Plugin_System
+ * @description  Allows user to install custom export plugins over SVGator online tool. Also includes SMIL export plugin as an example.
+ * @author       UROBBYU
+ * @link         https://urobbyu.github.io
+ */
 window.plugins = setInterval(() => {
     if (document.querySelector('#document')) {
         clearInterval(window.plugins)
 
+        //* SVG SMIL ANIMATION EXPORT FUNCTION
+        /** 
+         * Runs export sequence for SMIL animation format.
+         * @param {object} funcOptions - Export options.
+         */
         async function exportSMIL(funcOptions) {
             const objectList = document.getElementById('elements-wrapper')
             const animList = document.getElementsByClassName('timeline-scrollbar')[0].getElementsByClassName('timeline-line keys')
@@ -26,9 +37,9 @@ window.plugins = setInterval(() => {
                 'transform-skew': ['skewX', 'skewY'],
                 'transform-rotate': 'rotate',
                 'compositing-opacity': 'opacity',
-                'fill-paint': 'fill',                     //TODO
+                'fill-paint': 'fill',
                 'fill-opacity': 'fill-opacity',
-                'stroke-paint': 'stroke',                 //TODO
+                'stroke-paint': 'stroke',
                 'stroke-opacity': 'stroke-opacity',
                 'stroke-width': 'stroke-width',
                 'stroke-dashArray': 'stroke-dasharray',
@@ -169,6 +180,7 @@ window.plugins = setInterval(() => {
                 return ret
             }
         
+            // Iterating through all animation keyframes and saving its position on timeline
             for (const a of animList) {
                 const id = a.dataset.for
                 const type = `${a.dataset.propertygroup}-${a.dataset.propertyname}`
@@ -181,6 +193,7 @@ window.plugins = setInterval(() => {
                     const time = key.dataset.keytime / 1000
                     anim.keyTimes.push(time)
                     anim.values.push(null)
+                    // Saving spline functions
                     if (i < keys.length - 1) {
                         key.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}))
                         key.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}))
@@ -191,10 +204,10 @@ window.plugins = setInterval(() => {
                         if (controls = easeSettings.querySelector('.easing-bezier-controls')) {
                             const options = controls.getElementsByTagName('input')
                             anim.ease.push(bezierCheckSplit(
-                                options[0].valueAsNumber,
-                                options[1].valueAsNumber,
-                                options[2].valueAsNumber,
-                                options[3].valueAsNumber
+                                options[0].value*1,
+                                options[1].value*1,
+                                options[2].value*1,
+                                options[3].value*1
                             ))
                         } else anim.ease.push([])
                         easingButton.click()
@@ -208,6 +221,7 @@ window.plugins = setInterval(() => {
                 }
             }
         
+            // Setting timeline zoom to maximum and time to zero
             timelineZoom.dispatchEvent(new MouseEvent('click', { clientX: timelineZoom.getBoundingClientRect().width + timelineZoom.getBoundingClientRect().x }))
             timelineRulerFull.dispatchEvent(new MouseEvent('click', { clientX: timelineRulerAnim.getBoundingClientRect().x }))
         
@@ -222,11 +236,12 @@ window.plugins = setInterval(() => {
                 if (f) openFolders()
             }
         
+            // Opening all objects groups
             await openFolders()
         
             const elementsList = document.querySelectorAll('[data-region="editor-left-content"] .tree-item:not(.tree-root)')
         
-            {
+            { // Deselecting all objects
                 let elem = elementsList[0]
                 elem.click()
                 await sleep(100)
@@ -235,6 +250,7 @@ window.plugins = setInterval(() => {
                 }
             }
         
+            // Saving zero animation objects' svg data
             Object.assign(svgData, Array.from(objectList.querySelectorAll(':not([style*="display: none"])')).reduce((t, v) => {
                 if (v.innerHTML) t[v.id] = v.outerHTML.replace(v.innerHTML, '<|>')
                 else t[v.id] = v.outerHTML.replace('><', '><|><')
@@ -243,6 +259,7 @@ window.plugins = setInterval(() => {
         
             await sleep(100)
         
+            // Iterating through every object on the scene and writing down its animation data
             for (const elem of elementsList) {
                 if (elem.querySelector(':scope > .tree-invisible')) continue
                 elem.click()
@@ -251,15 +268,22 @@ window.plugins = setInterval(() => {
                 const id = document.querySelector('#tool-selection .bounding-box-rect').dataset.for
                 const options = document.querySelectorAll('[data-region="editor-right-content"] .accordion-body.disable-on-play input')
                 const object = objectList.querySelector('#'+id)
-                const rectOffset = object.tagName == 'rect'
+                const offset = (object.tagName == 'rect' || object.tagName == 'polygon') + (options.length == 27)
+                const opt = n => options[n + (n > 3 ? offset : 0)].value
+                // Saving base values for reference
                 objBase[id] = {
-                    size:   [options[2].value*1, options[3].value*1],
-                    origin: [options[4 +rectOffset].value*1, options[5 +rectOffset].value*1],
-                    anchor: [options[6 +rectOffset].value*1, options[7 +rectOffset].value*1],
-                    scale:  [options[8 +rectOffset].value*1, options[9 +rectOffset].value*1],
-                    skew:   [options[10+rectOffset].value*1, options[11+rectOffset].value*1],
-                    rotate: [options[12+rectOffset].value*1, options[13+rectOffset].value*1]
+                    size:   [opt(2)*1, opt(3)*1],
+                    origin: [opt(4)*1, opt(5)*1],
+                    anchor: [opt(6)*1, opt(7)*1],
+                    scale:  [opt(8)*1, opt(9)*1],
+                    skew:   [opt(10)*1, opt(11)*1],
+                    rotate: [opt(12)*1, opt(13)*1]
                 }
+                function getColor(n) {
+                    const type = opt(n)
+                    return { type, color: (type == 'Linear' || type == 'Radial' ? document.getElementById(id+(n == 16 ? '--fill' : '--stroke')).cloneNode(true) : type) }
+                }
+                // Iterating through every keyframe and writing down its keyvalue
                 if (animation.hasOwnProperty(id)) {
                     const timestamps = Object.keys(animation[id])
                     .reduce((t, type) => t.concat(animation[id][type].keyTimes.map((time, i) => ({time, type, value: i}))), [])
@@ -277,78 +301,207 @@ window.plugins = setInterval(() => {
                                 case 'shape-size':          return `${object.getAttribute('width')} ${object.getAttribute('height')}`
                                 case 'shape-radius':        return `${object.getAttribute('rx')} ${object.getAttribute('ry')}`
                                 case 'shape-path':          return object.getAttribute('d')
-                                case 'transform-origin':    return `${options[4+rectOffset].value - objBase[id].origin[0]} ${options[5+rectOffset].value - objBase[id].origin[1]}`
+                                case 'transform-origin':    return `${opt(4) - objBase[id].origin[0]} ${opt(5) - objBase[id].origin[1]}`
                                 //case 'transform-translate': return `${options[6+rectOffset].value - objBase[id].anchor[0]} ${options[7+rectOffset].value - objBase[id].anchor[1]}`
-                                case 'transform-scale':     return `${options[8+rectOffset].value / objBase[id].scale[0]} ${options[9+rectOffset].value / objBase[id].scale[1]}`
-                                case 'transform-skew':      return `${options[10+rectOffset].value - objBase[id].skew[0]} ${options[11+rectOffset].value - objBase[id].skew[1]}`
-                                case 'transform-rotate':    return options[13+rectOffset].value*1 + 360 * options[12+rectOffset].value - objBase[id].rotate[1] - 360 * objBase[id].rotate[0]
-                                case 'compositing-opacity': return options[15+rectOffset].value / 100
-                                case 'fill-opacity':        return options[17+rectOffset].value / 100
-                                case 'stroke-opacity':      return options[19+rectOffset].value / 100
-                                case 'stroke-width':        return options[20+rectOffset].value*1
-                                case 'stroke-dashArray':    return options[22+rectOffset].value.split(';').join('')
-                                case 'stroke-dashOffset':   return options[23+rectOffset].value*1
+                                case 'transform-scale':     return `${opt(8) / objBase[id].scale[0]} ${opt(9) / objBase[id].scale[1]}`
+                                case 'transform-skew':      return `${opt(10) - objBase[id].skew[0]} ${opt(11) - objBase[id].skew[1]}`
+                                case 'transform-rotate':    return opt(13)*1 + 360 * opt(12) - objBase[id].rotate[1] - 360 * objBase[id].rotate[0]
+                                case 'compositing-opacity': return opt(15) / 100
+                                case 'fill-paint':          return getColor(16)
+                                case 'fill-opacity':        return opt(17) / 100
+                                case 'stroke-paint':        return getColor(18)
+                                case 'stroke-opacity':      return opt(19) / 100
+                                case 'stroke-width':        return opt(20)*1
+                                case 'stroke-dashArray':    return opt(22).split(';').join('')
+                                case 'stroke-dashOffset':   return opt(23)*1
                             }})()
                         }
                     }
                 }
             }
-        
+
+            // Iterating through all saved animation data
             for (const id in animation) {
                 for (const type in animation[id]) {
-                    if (animation[id][type].keyTimes[animation[id][type].keyTimes.length - 1] != maxTime) {
-                        animation[id][type].keyTimes.push(maxTime)
-                        animation[id][type].values.push(animation[id][type].values[animation[id][type].values.length - 1])
-                        animation[id][type].ease.push([])
+                    const anim = animation[id][type]
+                    // Ensuring there are last keys
+                    if (anim.keyTimes[anim.keyTimes.length - 1] != maxTime) {
+                        anim.keyTimes.push(maxTime)
+                        anim.values.push(anim.values[anim.values.length - 1])
+                        anim.ease.push([])
                     }
+                    // Dealing with splines
                     let keySplines = []
-                    if (animation[id][type].ease.filter(a => a.length).length) {
-                        const ease = animation[id][type].ease
+                    if (anim.ease.filter(a => a.length).length) {
+                        const ease = anim.ease
                         for (let i = 0; i < ease.length; i++) {
                             if (!ease[i].length) {
                                 keySplines.push('0 0 1 1')
                                 continue
                             }
                             let j = 0
-                            if (min = ease[i][ease[i].length - 1].min) {
+                            if ((min = ease[i][ease[i].length - 1].min) && !type.endsWith('-paint')) {
                                 keySplines.push(Object.values(ease[i][j]).join(' '))
                                 j++
-                                const time = gradientPick(animation[id][type].keyTimes[i], animation[id][type].keyTimes[i+j], min.x)
-                                const value = gradientPick(animation[id][type].values[i], animation[id][type].values[i+j], min.y)
-                                animation[id][type].keyTimes.splice(i + j, 0, time)
-                                animation[id][type].values.splice(i + j, 0, value)
+                                const time = gradientPick(anim.keyTimes[i], anim.keyTimes[i+j], min.x)
+                                const value = gradientPick(anim.values[i], anim.values[i+j], min.y)
+                                anim.keyTimes.splice(i + j, 0, time)
+                                anim.values.splice(i + j, 0, value)
                             }
                             keySplines.push(Object.values(ease[i][j]).join(' '))
                             j++
-                            if (max = ease[i][ease[i].length - 1].max) {
+                            if ((max = ease[i][ease[i].length - 1].max) && !type.endsWith('-paint')) {
                                 keySplines.push(Object.values(ease[i][j]).join(' '))
-                                const time = gradientPick(animation[id][type].keyTimes[i], animation[id][type].keyTimes[i+j], max.x)
-                                const value = gradientPick(animation[id][type].values[i], animation[id][type].values[i+j], max.y)
-                                animation[id][type].keyTimes.splice(i + j, 0, time)
-                                animation[id][type].values.splice(i + j, 0, value)
+                                const time = gradientPick(anim.keyTimes[i], anim.keyTimes[i+j], max.x)
+                                const value = gradientPick(anim.values[i], anim.values[i+j], max.y)
+                                anim.keyTimes.splice(i + j, 0, time)
+                                anim.values.splice(i + j, 0, value)
                             }
                         }
                     }
-                    animation[id][type].keyTimes = animation[id][type].keyTimes.map(v => Math.round(v / maxTime * 100) / 100).join(';')
-                    animation[id][type].values = animation[id][type].values.join(';')
-                    animation[id][type].keySplines = keySplines.join(';')
-                    delete animation[id][type].ease
+                    // Dealing with colors
+                    if (type.endsWith('-paint')) {
+                        const gradID = `${id}--${animTypeMap[type]}`
+                        const linearStops = anim.values.filter(c => c.type == 'Linear').reduce((t, v) => Math.max([...v.color.childNodes].filter(s => s.tagName == 'stop').length, t), 0)
+                        const linearAnim = []
+                        const radialStops = anim.values.filter(c => c.type == 'Radial').reduce((t, v) => Math.max([...v.color.childNodes].filter(s => s.tagName == 'stop').length, t), 0)
+                        const radialAnim = []
+                        const values = []
+                        for (let i = 0; i < anim.values.length; i++) {
+                            const value = anim.values[i]
+                            const time = anim.keyTimes[i]
+                            if (value.type == value.color) {
+                                values.push((value.color == 'none' ? '' : '#') + value.color)
+                                if (linearAnim.length) linearAnim.push({ time, value: linearAnim[linearAnim.length - 1].value })
+                                if (radialAnim.length) radialAnim.push({ time, value: radialAnim[radialAnim.length - 1].value })
+                            } else {
+                                const isL = value.type == 'Linear'
+                                values.push(`url(#${gradID}--${isL ? 'l' : 'r'})`)
+                                if (i == 0) svgData[id] = svgData[id].replace(gradID, `${gradID}--${isL ? 'l' : 'r'}`)
+                                const stops = []
+                                for (let s = 0; s < (isL ? linearStops : radialStops); s++) {
+                                    const stop = value.color.childNodes[s]
+                                    stops.push(stop ?? stops[stops.length - 1])
+                                }
+                                if (isL) linearAnim.push({ time, value: {
+                                    x1: value.color.getAttribute('x1'),
+                                    y1: value.color.getAttribute('y1'),
+                                    x2: value.color.getAttribute('x2'),
+                                    y2: value.color.getAttribute('y2'),
+                                    stops
+                                }})
+                                else radialAnim.push({ time, value: {
+                                    cx: value.color.getAttribute('cx'),
+                                    cy: value.color.getAttribute('cy'),
+                                    r: value.color.getAttribute('r'),
+                                    transform: value.color.getAttribute('gradientTransform'),
+                                    stops
+                                }})
+                            }
+                        }
+                        anim.values = values
+                        const spline = (anim.keySplines ? ` calcMode="spline" keySplines="${anim.keySplines.join(';')}"` : '')
+                        let begin = ' begin = "never"'
+                        if (funcOptions.beginType == 'On load') begin = ''
+                        if (funcOptions.beginType == 'On click') begin = ' begin = "click"' 
+                        const repeatCount = (Number.isFinite(funcOptions.iterate) ? funcOptions.iterate : 'indefinite')
+                        const fill = (funcOptions.fillMode == 'Forwards' ? ' fill="freeze"' : '')
+                        if (linearAnim.length) {
+                            const base = linearAnim[0].value
+                            const time = []
+                            const x1 = []
+                            const y1 = []
+                            const x2 = []
+                            const y2 = []
+                            const stops = base.stops.map(() => [])
+                            for (const val of linearAnim) {
+                                time.push(val.time)
+                                x1.push(val.value.x1)
+                                y1.push(val.value.y1)
+                                x2.push(val.value.x2)
+                                y2.push(val.value.y2)
+                                for (let s = 0; s < stops.length; s++) stops[s].push({offset: val.value.stops[s].getAttribute('offset'), color: val.value.stops[s].getAttribute('stop-color')})
+                            }
+                            let str = `<linearGradient id="${gradID}--l" x1="${base.x1}" y1="${base.y1}" x2="${base.x2}" y2="${base.y2}">`
+                            for (const stop of stops) {
+                                str += `<stop offset="${stop[0].offset}" stop-color="${stop[0].color}">`
+                                if (stop.length > 1) {
+                                    if ((val = stop.map(v => v.offset)).reduce((t, v) => (t.includes(v) ? t : [...t, v]), []).length > 1) str += `<animate${begin} attributeName="offset" values="${val.join(';')}" keyTimes="${time.map(v => Math.round(v / maxTime * 100) / 100).join(';')}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                    if ((val = stop.map(v => v.color)).reduce((t, v) => (t.includes(v) ? t : [...t, v]), []).length > 1) str += `<animate${begin} attributeName="stop-color" values="${val.join(';')}" keyTimes="${time.map(v => Math.round(v / maxTime * 100) / 100).join(';')}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                }
+                                str += '</stop>'
+                            }
+                            if (x1.length > 1) {
+                                str += [
+                                    'x1" values="' + x1.join(';'),
+                                    'y1" values="' + y1.join(';'),
+                                    'x2" values="' + x2.join(';'),
+                                    'y2" values="' + y2.join(';')
+                                ].map(v => (v.replace(/.*"/, '').split(';').reduce((t, v) => (t.includes(v) ? t : [...t, v]), []).length > 1 ? `<animate${begin} attributeName="${v}" keyTimes="${time.map(v => Math.round(v / maxTime * 100) / 100).join(';')}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>` : '')).join('')
+                            }
+                            objBase[id][animTypeMap[type]+'LinearGrad'] = str + '</linearGradient>'
+                        }
+                        if (radialAnim.length) {
+                            const base = radialAnim[0].value
+                            const time = []
+                            const cx = []
+                            const cy = []
+                            const r = []
+                            const transform = []
+                            const stops = base.stops.map(() => [])
+                            for (const val of radialAnim) {
+                                time.push(val.time)
+                                cx.push(val.value.cx)
+                                cy.push(val.value.cy)
+                                r.push(val.value.r)
+                                transform.push(val.value.transform)
+                                for (let s = 0; s < stops.length; s++) stops[s].push({offset: val.value.stops[s].getAttribute('offset'), color: val.value.stops[s].getAttribute('stop-color')})
+                            }
+                            let str = `<radialGradient id="${gradID}--r" cx="${base.cx}" cy="${base.cy}" r="${base.r}" gradientTransform="${base.transform}">`
+                            for (const stop of stops) {
+                                str += `<stop offset="${stop[0].offset}" stop-color="${stop[0].color}">`
+                                if (stop.length > 1) {
+                                    if ((val = stop.map(v => v.offset)).reduce((t, v) => (t.includes(v) ? t : [...t, v]), []).length > 1) str += `<animate${begin} attributeName="offset" values="${val.join(';')}" keyTimes="${time.map(v => Math.round(v / maxTime * 100) / 100).join(';')}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                    if ((val = stop.map(v => v.color)).reduce((t, v) => (t.includes(v) ? t : [...t, v]), []).length > 1) str += `<animate${begin} attributeName="stop-color" values="${val.join(';')}" keyTimes="${time.map(v => Math.round(v / maxTime * 100) / 100).join(';')}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                }
+                                str += '</stop>'
+                            }
+                            if (cx.length > 1) {
+                                str += [
+                                    'cx" values="' + cx.join(';'),
+                                    'cy" values="' + cy.join(';'),
+                                    'r" values="' + r.join(';'),
+                                    'gradientTransform" values="' + transform.join(';')
+                                ].map(v => (v.replace(/.*"/, '').split(';').reduce((t, v) => (t.includes(v) ? t : [...t, v]), []).length > 1 ? `<animate${begin} attributeName="${v}" keyTimes="${time.map(v => Math.round(v / maxTime * 100) / 100).join(';')}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>` : '')).join('')
+                            }
+                            objBase[id][animTypeMap[type]+'RadialGrad'] = str + '</radialGradient>'
+                        }
+                    }
+                    // Assembling final values
+                    anim.keyTimes = anim.keyTimes.map(v => Math.round(v / maxTime * 100) / 100).join(';')
+                    anim.values = anim.values.join(';')
+                    anim.keySplines = keySplines.join(';')
+                    delete anim.ease
                 }
             }
             
+            // Iterating through initial svg data
             for (const id in svgData) {
                 let str = svgData[id]
                 const dot = rotateVector([objBase[id].anchor[0], objBase[id].anchor[1]], -objBase[id].rotate[1] / 180 * Math.PI)
-                const matrix = createMatrix(objBase[id].rotate[1], objBase[id].skew[0], objBase[id].skew[1], objBase[id].scale[0], objBase[id].scale[1], dot[0] / objBase[id].scale[0], dot[1] / objBase[id].scale[1], objBase[id].origin[0], objBase[id].origin[1])
+                //? Do i still need this?
+                //const matrix = createMatrix(objBase[id].rotate[1], objBase[id].skew[0], objBase[id].skew[1], objBase[id].scale[0], objBase[id].scale[1], dot[0] / objBase[id].scale[0], dot[1] / objBase[id].scale[1], objBase[id].origin[0], objBase[id].origin[1])
                 let begin = ' begin = "never"'
                 if (funcOptions.beginType == 'On load') begin = ''
                 if (funcOptions.beginType == 'On click') begin = ' begin = "click"'
                 const repeatCount = (Number.isFinite(funcOptions.iterate) ? funcOptions.iterate : 'indefinite')
                 const fill = (funcOptions.fillMode == 'Forwards' ? ' fill="freeze"' : '')
-                str = str.replace(/ transform=".*?"/g, ` transform="matrix(${matrix})"`)
+                // Assembling final object tags
+                //str = str.replace(/ transform=".*?"/g, ` transform="matrix(${matrix})"`)
                 str = str.replaceAll(/ (style=".*?"|opacity="1"|fill-opacity="1"|fill-rule="nonzero"|stroke-opacity="1"|stroke-linecap="butt"|stroke-linejoin="miter"|stroke-miterlimit="4"|stroke-dashoffset="0"|stroke-dasharray="")/g, '')
                 str = str.replace('" ', `" style="transform-origin:${-objBase[id].anchor[0]}px ${-objBase[id].anchor[1]}px" `)
                 str = str.substr(0, str.indexOf('<|'))
+                // Adding animation tags in it
                 if (animation.hasOwnProperty(id)) {
                     for (let type in animation[id]) {
                         const anim = animation[id][type]
@@ -398,20 +551,51 @@ window.plugins = setInterval(() => {
                 }
                 return str
             }
+            // Finally assembling actual svg file
             let str = `<svg id="${funcOptions.filename.replaceAll(' ', '-').replace('.svg', '').toLowerCase()}" xmlns="http://www.w3.org/2000/svg" viewBox="${canvasMetric}" width="${canvasWidth}" height="${canvasHeight}"${funcOptions.fillColor ? ` style="background-color:${funcOptions.fillColor}"` : ''}>`
-            if ((dynDef = document.querySelector('defs#dynamic-definitions'))?.innerHTML) str += dynDef.outerHTML
+            if ((dynDef = document.querySelector('defs#dynamic-definitions'))?.innerHTML) {
+                const [start, end] = dynDef.outerHTML.split(dynDef.innerHTML)
+                let inner = dynDef.innerHTML
+                for (const id in animation) {
+                    if (grad = objBase[id].strokeLinearGrad) {
+                        if ((regex = new RegExp(`<linearGradient id="${id+'--stroke'}".*?Gradient>`)).exec(inner)) inner = inner.replace(regex, grad)
+                        else inner += grad
+                    }
+                    if (grad = objBase[id].fillLinearGrad) {
+                        if ((regex = new RegExp(`<linearGradient id="${id+'--fill'}".*?Gradient>`)).exec(inner)) inner = inner.replace(regex, grad)
+                        else inner += grad
+                    }
+                    if (grad = objBase[id].strokeRadialGrad) {
+                        if ((regex = new RegExp(`<radialGradient id="${id+'--stroke'}".*?Gradient>`)).exec(inner)) inner = inner.replace(regex, grad)
+                        else inner += grad
+                    }
+                    if (grad = objBase[id].fillRadialGrad) {
+                        if ((regex = new RegExp(`<radialGradient id="${id+'--fill'}".*?Gradient>`)).exec(inner)) inner = inner.replace(regex, grad)
+                        else inner += grad
+                    }
+                }
+                str += start + inner + end
+            }
             if ((def = document.querySelector('defs#definitions'))?.innerHTML) str += def.outerHTML
             str += recSVGAssamble(objectList.querySelectorAll(':scope > :not([style*="display: none"])'))
+            // Adding some custom functions for easier control over animations
             if (funcOptions.beginType == 'On function call') str += `<script>${[
                 "const a=document.querySelectorAll('animate,animateTransform')",
-                "document.beginAnimation=()=>a.forEach(v=>v.beginElement())",
-                "document.beginAnimationAt=o=>a.forEach(v=>v.beginElementAt(o))",
-                "document.endAnimation=()=>a.forEach(v=>v.endElement())",
-                "document.endAnimationAt=o=>a.forEach(v=>v.endElement(o))",
+                "let t=0",
+                "document.start=document.beginAnimation=()=>{a.forEach(v=>v.beginElement());t=0}",
+                "document.beginAnimationAt=o=>{a.forEach(v=>v.beginElementAt(o));t=-o}",
+                "document.pause=document.endAnimation=()=>{t=document.time;a.forEach(v=>v.endElement())}",
+                "document.endAnimationAt=o=>{t=document.time-o;a.forEach(v=>v.endElementAt(o))}",
+                "document.resume=()=>document.beginAnimationAt(-t)",
+                "document.startAt=(b=0,d=document.duration)=>{document.beginAnimationAt(-b);document.endAnimationAt(d+b)}",
                 "Object.defineProperty(document,'repeatCount',{get(){return a[0].getAttribute('repeatCount')*1},set(v){a.forEach(e=>e.setAttribute('repeatCount',v))}})",
-                "Object.defineProperty(document,'fillMode',{get(){return a[0].getAttribute('fill')},set(v){a.forEach(e=>e.setAttribute('fill',v))}})"
+                "Object.defineProperty(document,'fillMode',{get(){return a[0].getAttribute('fill')},set(v){a.forEach(e=>e.setAttribute('fill',v))}})",
+                "Object.defineProperty(document,'duration',{get(){return a[0].getAttribute('dur')},set(v){a.forEach(e=>e.setAttribute('dur',v))}})",
+                "Object.defineProperty(document,'time',{get(){try{return a[0].getCurrentTime()-a[0].getStartTime()}catch(e){return t}},set(v){document.beginAnimationAt(-v);document.endAnimation()}})",
+                "a[0].addEventListener('endEvent',()=>{t=document.duration})"
             ].join(';')}</script>`
             str += '</svg>'
+            // Downloading assembled svg file
             const downloader = document.createElement('a')
             downloader.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(str)
             downloader.download = funcOptions.filename
@@ -528,6 +712,7 @@ window.plugins = setInterval(() => {
             return outerDiv
         }
     
+        //* PLUGINS CODE
         window.plugins = {
             list: {},
             addPlugin({ head, body }) {
@@ -735,60 +920,64 @@ window.plugins = setInterval(() => {
     }
 }, 100)
 
-/*
-const tmp = window.plugins.addPlugin({
-  head: {
-    title: 'Testing Unit',
-    text: 'This plug-in was designed for testing purposes only',
-    link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-  },
-  body: [
-    {
-      type: 'subtitle',
-      title: 'File'
-    },{
-      type: 'textbox',
-      id: 'export-name',
-      title: 'Export as',
-      value: document.querySelector('.menubar-left input').value + '.svg'
-    },{
-      type: 'subtitle',
-      title: 'Animation'
-    },{
-      type: 'selection',
-      id: 'start',
-      title: 'Animation start',
-      values: [
-        { text: 'On function call' },
-        { text: 'On click' },
-        { text: 'On load' }
+/* Plugin creating template
+{
+  function install() {
+    const tmp = window.plugins.addPlugin({
+      head: {
+        title: 'Testing Unit',
+        text: 'This plug-in was designed for testing purposes only',
+        link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+      },
+      body: [
+        {
+          type: 'subtitle',
+          title: 'File'
+        },{
+          type: 'textbox',
+          id: 'export-name',
+          title: 'Export as',
+          value: document.querySelector('.menubar-left input').value + '.svg'
+        },{
+          type: 'subtitle',
+          title: 'Animation'
+        },{
+          type: 'selection',
+          id: 'start',
+          title: 'Animation start',
+          values: [
+            { text: 'On function call' },
+            { text: 'On click' },
+            { text: 'On load' }
+          ]
+        },{ type: 'subtitle' },{
+          type: 'counter',
+          title: 'Iterations',
+          counterText: 'Count',
+          radioText: 'Infinite'
+        },{
+          type: 'selection',
+          id: 'fill-mode',
+          title: 'Fill mode',
+          values: [
+            { text: 'Forwards' },
+            { text: 'Backwards' }
+          ]
+        },{
+          type: 'subtitle',
+          title: 'Document'
+        },{
+          type: 'colorPicker'
+        }
       ]
-    },{ type: 'subtitle' },{
-      type: 'counter',
-      title: 'Iterations',
-      counterText: 'Count',
-      radioText: 'Infinite'
-    },{
-      type: 'selection',
-      id: 'fill-mode',
-      title: 'Fill mode',
-      values: [
-        { text: 'Forwards' },
-        { text: 'Backwards' }
-      ]
-    },{
-      type: 'subtitle',
-      title: 'Document'
-    },{
-      type: 'colorPicker'
-    }
-  ]
-})
-tmp.setExportFunction(() => console.log({
-  filename: tmp.getValues()[0],
-  beginType: tmp.getValues()[1],
-  iterate: tmp.getValues()[2],
-  fillMode: tmp.getValues()[3],
-  fillColor: tmp.getValues()[4]
-}))
+    })
+    tmp.setExportFunction(() => console.log(`%cHere's your input data:%c\n${{
+      filename: tmp.getValues()[0],
+      beginType: tmp.getValues()[1],
+      iterate: tmp.getValues()[2],
+      fillMode: tmp.getValues()[3],
+      fillColor: tmp.getValues()[4]
+    }}`, 'font-weight:bold;color:orange'))
+  }
+}
 */
