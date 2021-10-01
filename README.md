@@ -132,6 +132,8 @@ In this example I referenced to some XMLDocument. So what is it? Well, it's a DO
 embedElement.getSVGDocument()
 ```
 
+You can read more about it [here](https://developer.mozilla.org/en-US/docs/Web/SVG/Scripting#inter-document_scripting_referencing_embedded_svg)
+
 **Little comparison of methods of starting animation:**
 ``` js
 // Pure JS + SVG
