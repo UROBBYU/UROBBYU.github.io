@@ -25,7 +25,7 @@ Just copy code down below to your browser console and be happy.
   document.head.appendChild(tmp)
 }
 ```
-To not to do this every time you refresh the page, you can use free browser extensions like **Tempermonkey** or **Greasemonkey**. They will do it automatically for you.
+To not to do this every time you refresh the page, you can use free browser extensions like **Tampermonkey** or **Greasemonkey**. They will do it automatically for you.
 
 To make it work just create new script.
 
