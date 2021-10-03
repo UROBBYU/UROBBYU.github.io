@@ -1,6 +1,6 @@
 <svg id="ghost-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000" style="background-color:rgb(8,25,33)">
     <style>
-        @import url("https://fonts.googleapis.com/css?family=Concert+One")
+        @import url("fonts\ConcertOne-Regular.ttf")
     </style>
     <defs id="dynamic-definitions">
         <filter id="g-lmtot4gbx8--filter-list" x="-10%" y="-10%" width="130%" height="140%" filterUnits="objectBoundingBox">
