@@ -3,6 +3,7 @@ const cacheData = {
         '/',
         '/css/style.css',
         '/img/download.svg',
+        '/img/Ghost Logo.svg',
         '/img/goal.svg',
         '/img/home.svg',
         '/img/idea.svg',

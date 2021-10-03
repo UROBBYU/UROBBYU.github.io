@@ -51,11 +51,6 @@ window.plugins = setInterval(() => {
                 return new Promise(res => setTimeout(res, time))
             }
         
-            const rotateVector = (vector, angle) => [
-                vector[0]*Math.cos(angle) - vector[1]*Math.sin(angle),
-                vector[0]*Math.sin(angle) + vector[1]*Math.cos(angle)
-            ]
-        
             function bezierCheckSplit(x1, y1, x2, y2) {
                 function minMaxBez(x1, y1, x2, y2) {
                     let pts = [{x: 0, y: 0}]
@@ -213,8 +208,8 @@ window.plugins = setInterval(() => {
         
             // Saving zero animation objects' svg data
             Object.assign(svgData, Array.from(objectList.querySelectorAll(':not([style*="display: none"])')).reduce((t, v) => {
-                if (v.innerHTML) t[v.id] = v.outerHTML.replace(v.innerHTML, '<|>')
-                else t[v.id] = v.outerHTML.replace('><', '><|><')
+                if (v.innerHTML && v.tagName != 'text' && v.tagName != 'tspan') t[v.id] = v.outerHTML.replace(v.innerHTML, '<|>')
+                else if (v.tagName != 'tspan') t[v.id] = v.outerHTML.replace('><', '><|><')
                 return t
             }, {}))
         
@@ -229,8 +224,8 @@ window.plugins = setInterval(() => {
                 const id = document.querySelector('#tool-selection .bounding-box-rect').dataset.for
                 const options = document.querySelectorAll('[data-region="editor-right-content"] .accordion-body.disable-on-play input')
                 const object = objectList.querySelector('#'+id)
-                const offset = (object.tagName == 'rect' || object.tagName == 'polygon') + (options.length == 27)
-                const opt = n => options[n + (n > 3 ? offset : 0)].value
+                const offset = [(object.tagName == 'rect' || object.tagName == 'polygon') + (options.length == 27), (object.tagName == 'text') * 6]
+                const opt = n => options[n + (n > 3 ? offset[0] : 0) + (n > 13 ? offset[1] : 0)].value
                 // Saving base values for reference
                 objBase[id] = {
                     size:   [opt(2)*1, opt(3)*1],
@@ -457,7 +452,6 @@ window.plugins = setInterval(() => {
             // Iterating through initial svg data
             for (const id in svgData) {
                 let str = svgData[id]
-                const dot = rotateVector([objBase[id].anchor[0], objBase[id].anchor[1]], -objBase[id].rotate[1] / 180 * Math.PI)
                 let begin = ' begin = "never"'
                 if (funcOptions.beginType == 'On load') begin = ''
                 if (funcOptions.beginType == 'On click') begin = ' begin = "click"'
@@ -465,9 +459,9 @@ window.plugins = setInterval(() => {
                 const fill = (funcOptions.fillMode == 'Forwards' ? ' fill="freeze"' : '')
                 // Assembling final object tags
                 str = str.replaceAll(/ (style=".*?"|opacity="1"|fill-opacity="1"|fill-rule="nonzero"|stroke-opacity="1"|stroke-linecap="butt"|stroke-linejoin="miter"|stroke-miterlimit="4"|stroke-dashoffset="0"|stroke-dasharray="")/g, '')
-                str = str.replace('" ', ` transform-origin="${-objBase[id].anchor[0]} ${-objBase[id].anchor[1]}"`)
-                str = str.substr(0, str.indexOf('<|'))
+                str = str.replace('" ', `" transform-origin="${-objBase[id].anchor[0]} ${-objBase[id].anchor[1]}" `)
                 // Adding animation tags in it
+                let animStr = ''
                 if (animation.hasOwnProperty(id)) {
                     for (let type in animation[id]) {
                         const anim = animation[id][type]
@@ -477,22 +471,22 @@ window.plugins = setInterval(() => {
                         const splitter = n => anim.values.split(';').map(v => v.split(' ')[n]).join(';')
                         if (propGroup == 'transform') {
                             if (propName == 'skew') {
-                                str += `<animateTransform${begin} attributeName="transform" type="skewX" values="${splitter(0)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
-                                str += `<animateTransform${begin} attributeName="transform" type="skewY" values="${splitter(1)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
+                                animStr += `<animateTransform${begin} attributeName="transform" type="skewX" values="${splitter(0)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
+                                animStr += `<animateTransform${begin} attributeName="transform" type="skewY" values="${splitter(1)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
                             } else {
-                                str += `<animateTransform${begin} attributeName="transform" type="${propAttr}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
+                                animStr += `<animateTransform${begin} attributeName="transform" type="${propAttr}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" additive="sum" repeatCount="${repeatCount}"${fill}/>`
                             }
                         } else {
                             if (type == 'shape-radius' || type == 'shape-size') {
-                                str += `<animate${begin} attributeName="${propAttr[0]}" values="${splitter(0)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
-                                str += `<animate${begin} attributeName="${propAttr[1]}" values="${splitter(1)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                animStr += `<animate${begin} attributeName="${propAttr[0]}" values="${splitter(0)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                animStr += `<animate${begin} attributeName="${propAttr[1]}" values="${splitter(1)}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
                             } else {
-                                str += `<animate${begin} attributeName="${propAttr}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
+                                animStr += `<animate${begin} attributeName="${propAttr}" values="${anim.values}" keyTimes="${anim.keyTimes}"${spline} dur="${maxTime}" repeatCount="${repeatCount}"${fill}/>`
                             }
                         }
                     }
                 }
-                str += svgData[id].substr(svgData[id].indexOf('</'))
+                str = str.replace('<|>', animStr)
                 svgData[id] = str
             }
         
