@@ -56,45 +56,6 @@ window.plugins = setInterval(() => {
                 vector[0]*Math.sin(angle) + vector[1]*Math.cos(angle)
             ]
         
-            function multiplyMatrices(...m) {
-                let result = m.shift()
-                for (const m2 of m) {
-                    let m1 = JSON.parse(JSON.stringify(result))
-                    for (let i = 0; i < m1.length; i++) {
-                        result[i] = []
-                        for (let j = 0; j < m2[0].length; j++) {
-                            let sum = 0
-                            for (let k = 0; k < m1[0].length; k++) {
-                                sum += m1[i][k] * m2[k][j]
-                            }
-                            result[i][j] = sum
-                        }
-                    }
-                }
-                return result
-            }
-        
-            function createMatrix(rot, skewX, skewY, scaleX, scaleY, anchorX, anchorY, posX, posY) {
-                const m = multiplyMatrices([
-                    [Math.cos(rot / 180 * Math.PI), -Math.sin(rot / 180 * Math.PI), posX],
-                    [Math.sin(rot / 180 * Math.PI),  Math.cos(rot / 180 * Math.PI), posY],
-                    [0, 0, 1]
-                ],[//  position & rotate
-                    [1, Math.tan(skewX / 180 * Math.PI), 0],
-                    [Math.tan(skewY / 180 * Math.PI), 1, 0],
-                    [0, 0, 1]
-                ],[//  skew
-                    [scaleX, 0, 0],
-                    [0, scaleY, 0],
-                    [0, 0, 1]
-                ],[//  scale
-                    [1, 0, anchorX],
-                    [0, 1, anchorY],
-                    [0, 0, 1]
-                ])//   anchor
-                return `${m[0][0]} ${m[1][0]} ${m[0][1]} ${m[1][1]} ${m[0][2]} ${m[1][2]}`
-            }
-        
             function bezierCheckSplit(x1, y1, x2, y2) {
                 function minMaxBez(x1, y1, x2, y2) {
                     let pts = [{x: 0, y: 0}]
@@ -420,7 +381,11 @@ window.plugins = setInterval(() => {
                                 y1.push(val.value.y1)
                                 x2.push(val.value.x2)
                                 y2.push(val.value.y2)
-                                for (let s = 0; s < stops.length; s++) stops[s].push({offset: val.value.stops[s].getAttribute('offset'), color: val.value.stops[s].getAttribute('stop-color')})
+                                for (let s = 0; s < stops.length; s++) {
+                                    let color = val.value.stops[s].getAttribute('stop-color')
+                                    if (color.startsWith('rgb(')) color = color.replace(/rgb\(|\)/g, '').split(',').reduce((t,v)=>t+(v>15?'':0)+(v*1).toString(16).toUpperCase(),'#')
+                                    stops[s].push({offset: val.value.stops[s].getAttribute('offset'), color})
+                                }
                             }
                             let str = `<linearGradient id="${gradID}--l" x1="${base.x1}" y1="${base.y1}" x2="${base.x2}" y2="${base.y2}">`
                             for (const stop of stops) {
@@ -455,7 +420,11 @@ window.plugins = setInterval(() => {
                                 cy.push(val.value.cy)
                                 r.push(val.value.r)
                                 transform.push(val.value.transform)
-                                for (let s = 0; s < stops.length; s++) stops[s].push({offset: val.value.stops[s].getAttribute('offset'), color: val.value.stops[s].getAttribute('stop-color')})
+                                for (let s = 0; s < stops.length; s++) {
+                                    let color = val.value.stops[s].getAttribute('stop-color')
+                                    if (color.startsWith('rgb(')) color = color.replace(/rgb\(|\)/g, '').split(',').reduce((t,v)=>t+(v>15?'':0)+(v*1).toString(16).toUpperCase(),'#')
+                                    stops[s].push({offset: val.value.stops[s].getAttribute('offset'), color})
+                                }
                             }
                             let str = `<radialGradient id="${gradID}--r" cx="${base.cx}" cy="${base.cy}" r="${base.r}" gradientTransform="${base.transform}">`
                             for (const stop of stops) {
@@ -489,17 +458,14 @@ window.plugins = setInterval(() => {
             for (const id in svgData) {
                 let str = svgData[id]
                 const dot = rotateVector([objBase[id].anchor[0], objBase[id].anchor[1]], -objBase[id].rotate[1] / 180 * Math.PI)
-                //? Do i still need this?
-                //const matrix = createMatrix(objBase[id].rotate[1], objBase[id].skew[0], objBase[id].skew[1], objBase[id].scale[0], objBase[id].scale[1], dot[0] / objBase[id].scale[0], dot[1] / objBase[id].scale[1], objBase[id].origin[0], objBase[id].origin[1])
                 let begin = ' begin = "never"'
                 if (funcOptions.beginType == 'On load') begin = ''
                 if (funcOptions.beginType == 'On click') begin = ' begin = "click"'
                 const repeatCount = (Number.isFinite(funcOptions.iterate) ? funcOptions.iterate : 'indefinite')
                 const fill = (funcOptions.fillMode == 'Forwards' ? ' fill="freeze"' : '')
                 // Assembling final object tags
-                //str = str.replace(/ transform=".*?"/g, ` transform="matrix(${matrix})"`)
                 str = str.replaceAll(/ (style=".*?"|opacity="1"|fill-opacity="1"|fill-rule="nonzero"|stroke-opacity="1"|stroke-linecap="butt"|stroke-linejoin="miter"|stroke-miterlimit="4"|stroke-dashoffset="0"|stroke-dasharray="")/g, '')
-                str = str.replace('" ', `" style="transform-origin:${-objBase[id].anchor[0]}px ${-objBase[id].anchor[1]}px" `)
+                str = str.replace('" ', ` transform-origin="${-objBase[id].anchor[0]} ${-objBase[id].anchor[1]}"`)
                 str = str.substr(0, str.indexOf('<|'))
                 // Adding animation tags in it
                 if (animation.hasOwnProperty(id)) {
