@@ -1,7 +1,5 @@
 <svg id="ghost-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000" style="background-color:rgb(8,25,33)">
-    <style>
-        @import url("fonts\ConcertOne-Regular.ttf")
-    </style>
+    <style>@font-face {font-family: 'Concert One';src:url('../fonts/ConcertOne-Regular.ttf') format('truetype')}</style>
     <defs id="dynamic-definitions">
         <filter id="g-lmtot4gbx8--filter-list" x="-10%" y="-10%" width="130%" height="140%" filterUnits="objectBoundingBox">
             <feGaussianBlur id="g-lmtot4gbx8--filter-list-blur-0" stdDeviation="3,3" result="result"></feGaussianBlur>
