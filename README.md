@@ -4,6 +4,8 @@
 
 <img src="https://urobbyu.github.io/img/Ghost%20Logo.svg" width="50%" height="50%">
 
+<embed type="image/svg+xml" src="https://urobbyu.github.io/img/Ghost%20Logo.svg">
+
 _Well, i like SVG images. They are future. And also i like animation. It helps to visualise things. So why not to combine them? What? They already did it with JS libraries? Pfft! It's too easy. I'll take my own way..._ 🥷
 
 **Ok. Here's the plan:**
