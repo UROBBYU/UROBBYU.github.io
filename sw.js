@@ -82,14 +82,18 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
-    e.respondWith((async () => {
-        try {
-            const cache = await caches.match(e.request)
-            if (cache) return cache
-            return await fetch(e.request)
-        } catch (err) {
-            console.error(err)
-        }
-        return new Response(null, { status: 400 })
-    })())
+    try {
+        e.respondWith((async () => {
+            try {
+                const cache = await caches.match(e.request)
+                if (cache) return cache
+                return await fetch(e.request)
+            } catch (err) {
+                console.error(err)
+            }
+            return new Response(null, { status: 400 })
+        })())
+    } catch (err) {
+        console.error(err)
+    }
 })
