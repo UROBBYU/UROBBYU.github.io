@@ -221,7 +221,7 @@ window.plugins = setInterval(() => {
                 elem.click()
                 timelineRulerFull.dispatchEvent(new MouseEvent('click', { clientX: timelineRulerAnim.getBoundingClientRect().x }))
                 await sleep(100)
-                const id = document.querySelector('#tool-selection .bounding-box-rect').dataset.for
+                const id = document.querySelector('#tool-selection .origin-point').dataset.for
                 const options = document.querySelectorAll('[data-region="editor-right-content"] .accordion-body.disable-on-play input')
                 const object = objectList.querySelector('#'+id)
                 const offset = [(object.tagName == 'rect' || object.tagName == 'polygon') + (options.length == 27), (object.tagName == 'text') * 6]
@@ -496,8 +496,6 @@ window.plugins = setInterval(() => {
                 canvasElem.getAttribute('width'),
                 canvasElem.getAttribute('height')
             ].join(' ')
-            const canvasWidth = canvasElem.getAttribute('width') - canvasElem.getAttribute('x')
-            const canvasHeight = canvasElem.getAttribute('height') - canvasElem.getAttribute('y')
             function recSVGAssamble(objList) {
                 let str = ''
                 for (const obj of objList) {
@@ -512,7 +510,7 @@ window.plugins = setInterval(() => {
                 return str
             }
             // Finally assembling actual svg file
-            let str = `<svg id="${funcOptions.filename.replaceAll(' ', '-').replace('.svg', '').toLowerCase()}" xmlns="http://www.w3.org/2000/svg" viewBox="${canvasMetric}" width="${canvasWidth}" height="${canvasHeight}"${funcOptions.fillColor ? ` style="background-color:${funcOptions.fillColor}"` : ''}>`
+            let str = `<svg id="${funcOptions.filename.replaceAll(' ', '-').replace('.svg', '').toLowerCase()}" xmlns="http://www.w3.org/2000/svg" viewBox="${canvasMetric}"${funcOptions.fillColor ? ` style="background-color:${funcOptions.fillColor}"` : ''}>`
             if ((dynDef = document.querySelector('defs#dynamic-definitions'))?.innerHTML) {
                 const [start, end] = dynDef.outerHTML.split(dynDef.innerHTML)
                 let inner = dynDef.innerHTML
