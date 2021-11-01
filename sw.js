@@ -89,7 +89,7 @@ self.addEventListener('fetch', e => {
             return await fetch(e.request)
         } catch (err) {
             console.error(err)
-            return new Response(null, { status: 400 })
         }
+        return new Response(null, { status: 400 })
     })())
 })
