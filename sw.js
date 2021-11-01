@@ -48,8 +48,11 @@ const curVer = cacheKeys.find(v => /^v\d+?$/.test(v))
 self.addEventListener('install', e => {
     e.waitUntil(new Promise(async res => {
         let lastVer = (await caches.keys()).find(v => /^v\d+?$/.test(v))
-        lastVer = (lastVer ? +lastVer : 0)
+        lastVer = (lastVer ? lastVer : 'v0')
+        console.log('lastVer', lastVer)
+        console.log('curVer', curVer)
         if (lastVer < curVer) {
+            console.log('creating new version')
             const cache = await caches.open(lastVer)
             const newCache = await caches.open(curVer)
             const promises = []
@@ -58,11 +61,16 @@ self.addEventListener('install', e => {
                     promises.push(newCache.put(key, await cache.match(key)))
                 }
             }
-            for (const cacheKey of cacheKeys.filter(v => v > lastVer)) {
-                promises.push(newCache.addAll(cacheData(cacheKey)))
+            const newVer = cacheKeys.filter(v => v > lastVer)
+            console.log('new versions', newVer)
+            for (const cacheKey of newVer) {
+                console.log('adding', cacheData[cacheKey])
+                promises.push(newCache.addAll(cacheData[cacheKey]))
             }
+            console.log('installation is done')
             await Promise.all(promises)
         }
+        console.log('its over')
         res()
     }))
 })
@@ -82,18 +90,15 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
-    try {
-        e.respondWith((async () => {
-            try {
-                const cache = await caches.match(e.request)
-                if (cache) return cache
-                return await fetch(e.request)
-            } catch (err) {
-                console.error(err)
-            }
-            return new Response(null, { status: 400 })
-        })())
-    } catch (err) {
-        console.error(err)
-    }
+    e.respondWith((async () => {
+        try {
+            const cache = await caches.match(e.request)
+            console.log('fetch', cache)
+            if (cache) return cache
+            return await fetch(e.request)
+        } catch (err) {
+            console.error(err)
+        }
+        return new Response(null, { status: 400 })
+    })())
 })
