@@ -38,7 +38,6 @@ const cacheData = {
 		'/minesweeper/style.css',
 		// Bookreader
 		'/bookreader/custom-icons.woff',
-		'/bookreader/style.css',
 		'https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap',
 	],
 	v2: [
@@ -50,6 +49,7 @@ const cacheData = {
 		'/bookreader/title.js',
 		'/bookreader/book.js',
 	],
+	v3: ['/bookreader/style.css'],
 }
 const domain = 'https://urepo.online'
 const cacheKeys = Object.keys(cacheData).sort((v1, v2) => v1.ver() > v2.ver())
