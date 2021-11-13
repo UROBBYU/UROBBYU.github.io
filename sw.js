@@ -43,13 +43,12 @@ const cacheData = {
 	v2: [
 		'/minesweeper/minesweeper.webmanifest',
 		'/bookreader/',
-		'/bookreader/index.html',
 		'/bookreader/main.js',
-		'/bookreader/catalog.js',
 		'/bookreader/title.js',
 		'/bookreader/book.js',
 	],
 	v4: ['/bookreader/style.css'],
+	v5: ['/bookreader/catalog.js', '/bookreader/index.html'],
 }
 const domain = 'https://urepo.online'
 const cacheKeys = Object.keys(cacheData).sort((v1, v2) => v1.ver() > v2.ver())
