@@ -72,7 +72,7 @@ self.addEventListener('install', (e) => {
 			if (lastVer.ver() < curVer.ver()) {
 				const oldCache = await caches.open(lastVer)
 				const newCache = await caches.open(curVer)
-				const promises = []
+				let promises = []
 				const controller = new AbortController()
 				for (const key of cacheKeys) {
 					console.log('key', key, key != curVer)
@@ -81,7 +81,7 @@ self.addEventListener('install', (e) => {
 							console.log('url', url)
 							const cache = await oldCache.match(url)
 							if (cache) {
-								console.log('transfer')
+								console.log('put')
 								promises.push(newCache.put(url, cache))
 							} else {
 								console.log('add')
@@ -118,6 +118,18 @@ self.addEventListener('install', (e) => {
 				const timerId = setTimeout(controller.abort, delayTime)
 				await Promise.all(promises)
 				clearTimeout(timerId)
+
+				promises = []
+				for (const key of await oldCache.keys()) {
+					if (needToStore(key.url)) {
+						promises.push(
+							newCache.put(key.url, await oldCache.match(key))
+						)
+						console.log('url', key.url)
+						console.log('put')
+					}
+				}
+				await Promise.all(promises)
 			}
 			console.log('Installation finished')
 		})()
