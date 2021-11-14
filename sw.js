@@ -45,10 +45,10 @@ const cacheData = {
 		'/bookreader/',
 		'/bookreader/main.js',
 		'/bookreader/title.js',
-		'/bookreader/book.js',
 	],
 	v4: ['/bookreader/style.css'],
 	v5: ['/bookreader/catalog.js', '/bookreader/index.html'],
+	v6: ['/bookreader/book.js'],
 }
 const domain = 'https://urepo.online'
 const cacheKeys = Object.keys(cacheData).sort((v1, v2) => v1.ver() > v2.ver())
