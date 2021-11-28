@@ -1,4 +1,4 @@
-const delayTime = 2000
+const delayTime = 10000
 
 String.prototype.ver = function () {
 	return +this.substr(1)
@@ -43,12 +43,11 @@ const cacheData = {
 	v2: [
 		'/minesweeper/minesweeper.webmanifest',
 		'/bookreader/',
-		'/bookreader/main.js',
 		'/bookreader/title.js',
 	],
-	v4: ['/bookreader/style.css'],
 	v5: ['/bookreader/catalog.js', '/bookreader/index.html'],
 	v6: ['/bookreader/book.js'],
+	v7: ['/bookreader/style.css', '/bookreader/main.js'],
 }
 const domain = 'https://urepo.online'
 const cacheKeys = Object.keys(cacheData).sort((v1, v2) => v1.ver() > v2.ver())
