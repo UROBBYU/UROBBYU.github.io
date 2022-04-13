@@ -7,7 +7,6 @@ String.prototype.ver = function () {
 const cacheData = {
 	v1: [
 		// Main
-		'/',
 		'/css/style.css',
 		'/img/administrator.svg',
 		'/img/download.svg',
@@ -18,15 +17,11 @@ const cacheData = {
 		'/img/links.svg',
 		'/img/menu.svg',
 		'/img/moderator.svg',
-		'/img/mstile-150.png',
 		'/img/premium.svg',
 		'/img/profile.svg',
 		'/img/sprite.svg',
 		'/img/wip.svg',
 		'/js/main.js',
-		'/browserconfig.xml',
-		'/favicon.ico',
-		'/index.html',
 		// Minesweeper
 		'/minesweeper/',
 		'/minesweeper/img/apple-touch-icon.png',
@@ -49,6 +44,13 @@ const cacheData = {
 	v8: ['/bookreader/book.js'],
 	v12: ['/bookreader/main.js'],
 	v13: ['/bookreader/style.css'],
+	v14: [
+		'/',
+		'/favicon.ico',
+		'/index.html',
+		'/browserconfig.xml',
+		'/img/mstile-150.png',
+	]
 }
 const domain = 'https://urepo.online'
 const cacheKeys = Object.keys(cacheData).sort((v1, v2) => v1.ver() > v2.ver())
